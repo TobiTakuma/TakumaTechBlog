@@ -1,0 +1,75 @@
+---
+// src/pages/blog/[...page].astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/Layout.astro'; // 適切なレイアウトを指定
+import type { CollectionEntry } from 'astro:content';
+import type { GetStaticPaths, Page } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) =>  {
+  // 1. 'blog'コレクションの記事をすべて取得
+  const allPosts = await getCollection('blog');
+
+  // 2. 公開日 (pubDate) の新しい順に記事をソート (ページ分割する前にソートする)
+  const sortedPosts = allPosts.sort((a, b) =>
+    b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+
+  // 3. paginate関数でページ分割 (1ページあたり5件)
+  //    ソート済みの記事リストを渡す
+  return paginate(sortedPosts, { pageSize: 5 });
+}
+
+// paginateから渡された現在のページ情報を受け取る
+const { page } = Astro.props as { page: Page<CollectionEntry<'blog'>> };
+
+// 個別記事ページへのURLを生成するヘルパー関数 (他ページで使っているものを流用)
+function getPostUrl(post : CollectionEntry<'blog'>) {
+  if (post.data.url) {
+    return `/${post.data.url}/`;
+  }
+  return `/blog/${post.slug}/`;
+}
+---
+
+<BaseLayout title={`ブログ記事一覧 - ${page.currentPage}ページ目`}>
+  <h1>ブログ記事一覧</h1>
+  <p>{page.start + 1}件目から{page.end + 1}件目を表示 ({page.total}件中)</p>
+
+  <ul>
+    {/* page.data に現在のページの5件分の記事が入っている */}
+    {page.data.map((post: CollectionEntry<'blog'>) => (
+      <li>
+        <a href={getPostUrl(post)}>{post.data.title}</a>
+        <span style="font-size: 0.8em; margin-left: 8px;">
+          ({post.data.pubDate.toLocaleDateString()})
+        </span>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
+
+<BaseLayout title={`ブログ記事一覧 - ${page.currentPage}ページ目`}>
+  {/* ... 記事リスト ... */}
+
+  {/* ↓ ここからページネーションリンクを追加 */}
+  <nav aria-label="ページネーション">
+    {/* 前のページへのリンク (page.url.prevが存在する場合のみ表示) */}
+    {page.url.prev ? (
+      <a href={page.url.prev}>&larr; 前のページへ</a>
+    ) : (
+      <span>&larr; 前のページへ</span> // リンク無効表示 (任意)
+    )}
+
+    <span style="margin: 0 1em;">
+      {page.currentPage} / {page.lastPage} ページ
+    </span>
+
+    {/* 次のページへのリンク (page.url.nextが存在する場合のみ表示) */}
+    {page.url.next ? (
+      <a href={page.url.next}>次のページへ &rarr;</a>
+    ) : (
+      <span>次のページへ &rarr;</span> // リンク無効表示 (任意)
+    )}
+  </nav>
+  {/* ↑ ここまでページネーションリンク */}
+</BaseLayout>

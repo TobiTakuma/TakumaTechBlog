@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/Layout.astro'; // 適切なレイアウトを指定
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+
+  // 1. 全記事からユニークなタグを集める
+  const uniqueTags = new Set<string>();
+  allPosts.forEach((post) => {
+    // post.data.tags が存在する場合のみ処理 (?. オプショナルチェイニング)
+    post.data.tags?.forEach((tag) => {
+      uniqueTags.add(tag); // Setが自動で重複を除外
+    });
+  });
+
+  // 2. 各タグに対応するページ情報を作成
+  return Array.from(uniqueTags).map((tag) => {
+    // 3. このタグが含まれる記事だけをフィルタリング
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags?.includes(tag)
+    );
+    // 4. ページのパスと渡すデータを返す
+    return {
+      params: { tag: tag }, // URLの [tag] 部分になる値
+      props: {
+        tag: tag, // ページコンポーネントで使うタグ名
+        posts: filteredPosts, // このタグの記事リスト
+      },
+    };
+  });
+
+  <BaseLayout title={`タグ: ${tag}`}>
+  <h1>タグ: 「{tag}」 の記事一覧</h1>
+
+  <ul>
+    {posts.map((post: CollectionEntry<'blog'>) => (
+      <li>
+        <a href={getPostUrl(post)}>{post.data.title}</a>
+        <span style="font-size: 0.8em; margin-left: 8px;">
+          ({post.data.pubDate.toLocaleDateString()})
+        </span>
+      </li>
+    ))}
+  </ul>
+
+  <p>
+    <a href="/tags/">すべてのタグ一覧へ</a>
+  </p>
+</BaseLayout>
+}
+
+// getStaticPathsから渡されたデータを受け取る
+const { tag, posts } = Astro.props;
+// 記事を日付順にソート (任意)
+posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// URLを決定するヘルパー関数 (個別記事ページへのリンク用、前の手順から流用)
+function getPostUrl(post: CollectionEntry<'blog'>) {
+  if (post.data.url) {
+    return `/${post.data.url}/`;
+  }
+  return `/blog/${post.slug}/`;
+}
+---

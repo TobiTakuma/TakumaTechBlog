@@ -1,0 +1,24 @@
+---
+// src/pages/tags/index.astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/Layout.astro'; // 適切なレイアウトを指定
+
+const allPosts = await getCollection('blog');
+const uniqueTags = new Set<string>();
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    uniqueTags.add(tag);
+  });
+});
+const sortedTags = Array.from(uniqueTags).sort(); // アルファベット順にソート (任意)
+---
+<BaseLayout title="すべてのタグ">
+  <h1>すべてのタグ一覧</h1>
+  <ul>
+    {sortedTags.map((tag) => (
+      <li>
+        <a href={`/tags/${tag}/`}>{tag}</a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
