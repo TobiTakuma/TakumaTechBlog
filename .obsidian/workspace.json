@@ -201,6 +201,8 @@
   },
   "active": "b10a3bb57106274a",
   "lastOpenFiles": [
+    "src/styles/global.css",
+    "src/styles",
     "src/content/blog/another-post.md",
     "src/content/blog/hashcat-password-cracking.md",
     "src/content/blog/git-push-error.md",
@@ -226,7 +228,6 @@
     "dist/pages/tags",
     "dist/pages/index.astro.mjs",
     "dist/pages/blog",
-    "dist/pages/_---slug_.astro.mjs",
     "dist/images/artemis-ii-launch-up-close.jpg",
     "dist/favicon.svg",
     "src/content/blog/test.md"

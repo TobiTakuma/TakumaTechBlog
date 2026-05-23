@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 interface Props {
   title: string;
 }
@@ -16,24 +18,14 @@ const { title } = Astro.props;
     <script is:inline>
       if (sessionStorage.getItem('lang') === 'ja') document.documentElement.classList.add('ja');
     </script>
-    <!-- is:global でスロット内の要素にも適用 -->
-    <style is:global>
-      /* デフォルト: 英語表示 */
-      .lang-ja, section[lang="ja"] { display: none; }
-
-      /* 日本語モード */
-      html.ja .lang-en, html.ja section[lang="en"] { display: none; }
-      html.ja .lang-ja, html.ja section[lang="ja"] { display: revert; }
-    </style>
   </head>
   <body>
     <nav>
-      <a href="/">Home</a> |
-      <a href="/blog">Blog</a> |
-      <a href="/tags">Tags</a> |
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/tags">Tags</a>
       <button id="lang-toggle"></button>
     </nav>
-    <hr />
     <main>
       <slot />
     </main>
