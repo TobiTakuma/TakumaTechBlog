@@ -25,12 +25,14 @@
             "id": "b10a3bb57106274a",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "public/images/artemis-ii-launch-up-close.jpg"
+                "file": "src/content/blog/another-post.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "artemis-ii-launch-up-close"
+              "icon": "lucide-file",
+              "title": "another-post"
             }
           }
         ],
@@ -199,6 +201,8 @@
   },
   "active": "b10a3bb57106274a",
   "lastOpenFiles": [
+    "src/content/blog/git-push-error.md",
+    "public/images/artemis-ii-launch-up-close.jpg",
     "src/content/blog/dateTest.md",
     "templates/blog-post.md",
     "src/content/blog/artemis-ii.md",
@@ -224,7 +228,6 @@
     "dist/pages/_---slug_.astro.mjs",
     "dist/images/artemis-ii-launch-up-close.jpg",
     "dist/favicon.svg",
-    "public/images/artemis-ii-launch-up-close.jpg",
     "src/content/blog/test.md"
   ]
 }
