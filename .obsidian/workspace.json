@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/blog/another-post.md",
+                "file": "src/content/blog/hashcat-password-cracking.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "another-post"
+              "title": "hashcat-password-cracking"
             }
           }
         ],
@@ -201,13 +201,14 @@
   },
   "active": "b10a3bb57106274a",
   "lastOpenFiles": [
+    "src/content/blog/another-post.md",
+    "src/content/blog/hashcat-password-cracking.md",
     "src/content/blog/git-push-error.md",
     "public/images/artemis-ii-launch-up-close.jpg",
     "src/content/blog/dateTest.md",
     "templates/blog-post.md",
     "src/content/blog/artemis-ii.md",
     "src/pages/tags/[tag].astro.tmp.3036.80bffd866407",
-    "src/content/blog/another-post.md",
     "src/content/blog/URL test.md",
     "src/content/blog/template test.md",
     "src/content/blog/my-first-post.md",
