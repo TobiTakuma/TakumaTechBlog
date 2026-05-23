@@ -12,8 +12,9 @@ allPosts.forEach((post) => {
 });
 const sortedTags = Array.from(uniqueTags).sort(); // アルファベット順にソート (任意)
 ---
-<BaseLayout title="すべてのタグ">
-  <h1>すべてのタグ一覧</h1>
+<BaseLayout title="Tags">
+  <h1 class="lang-en">All Tags</h1>
+  <h1 class="lang-ja">すべてのタグ一覧</h1>
   <ul>
     {sortedTags.map((tag) => (
       <li>

@@ -2,57 +2,42 @@
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-// 1. 'blog'コレクションの記事をすべて取得
-const allPosts = await getCollection('blog');
 
-// 2. 公開日 (pubDate) の新しい順に記事をソート
-//    new Date() を使って日付として比較する
+const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
   b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
-// 3. 最新の5件だけを取得 (sliceを使用)
 const recentPosts = sortedPosts.slice(0, 5);
 
-// 4. 個別記事ページへのURLを生成するヘルパー関数 (前の手順で作成したものを再利用または同様のロジックを記述)
-function getPostUrl(post : CollectionEntry<'blog'>) {
-  if (post.data.url) {
-    // フロントマターにurlがあれば、ルートからのパスを返す
-    return `/${post.data.url}/`;
-  }
-  // なければファイルパスに基づくデフォルトのパスを返す
-  return `/blog/${post.slug}/`;
+function getPostUrl(post: CollectionEntry<'blog'>) {
+  return post.data.url
+    ? `/${post.data.url}/`
+    : `/blog/${post.id.replace(/\.md$/, '')}/`;
 }
-
-// 他のトップページ用データなど...
-const pageTitle = "Toiyama Takumaのブログへようこそ";
 ---
 
-<!-- <Layout title="ホーム">
-  <h1>私のブログへようこそ</h1>
-  <p><a href="/blog">ブログ記事一覧はこちら</a></p>
-</Layout> -->
+<Layout title="Toiyama Takuma's Blog">
+  <h1 class="lang-en">Welcome to Toiyama Takuma's Blog</h1>
+  <h1 class="lang-ja">Toiyama Takumaのブログへようこそ</h1>
 
-<Layout title={pageTitle}>
-  <h1>{pageTitle}</h1>
-  <p>このサイトのトップページです。</p>
-  <p><a href="/blog">ブログ記事一覧はこちら</a></p>
+  <p>
+    <span class="lang-en"><a href="/blog">View all posts</a></span>
+    <span class="lang-ja"><a href="/blog">記事一覧を見る</a></span>
+  </p>
 
-  {/* ↓ ここから新着記事一覧を追加 */}
-  <h2>新着記事</h2>
+  <h2 class="lang-en">Recent Posts</h2>
+  <h2 class="lang-ja">新着記事</h2>
   <ul>
     {recentPosts.map((post) => (
       <li>
-        {/* getPostUrlヘルパーでリンク先URLを生成 */}
-        <a href={getPostUrl(post)}>{post.data.title}</a>
+        <a href={getPostUrl(post)}>
+          <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
+          <span class="lang-ja">{post.data.title}</span>
+        </a>
         <span style="font-size: 0.8em; margin-left: 8px;">
-          ({post.data.pubDate.toLocaleDateString()})
+          ({post.data.pubDate.toLocaleDateString('ja-JP')})
         </span>
       </li>
     ))}
   </ul>
-  {/* ↑ ここまで新着記事一覧 */}
-
-  {/* 他のトップページのコンテンツ... */}
 </Layout>
-

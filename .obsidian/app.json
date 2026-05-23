@@ -1,0 +1,6 @@
+{
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "public/images",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "src/content/blog"
+}

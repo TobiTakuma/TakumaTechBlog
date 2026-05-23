@@ -1,75 +1,57 @@
 ---
-// src/pages/blog/[...page].astro
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/Layout.astro'; // 適切なレイアウトを指定
+import BaseLayout from '../../layouts/Layout.astro';
 import type { CollectionEntry } from 'astro:content';
 import type { GetStaticPaths, Page } from 'astro';
 
-export const getStaticPaths: GetStaticPaths = async ({ paginate }) =>  {
-  // 1. 'blog'コレクションの記事をすべて取得
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
   const allPosts = await getCollection('blog');
-
-  // 2. 公開日 (pubDate) の新しい順に記事をソート (ページ分割する前にソートする)
   const sortedPosts = allPosts.sort((a, b) =>
     b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
-
-  // 3. paginate関数でページ分割 (1ページあたり5件)
-  //    ソート済みの記事リストを渡す
   return paginate(sortedPosts, { pageSize: 5 });
-}
+};
 
-// paginateから渡された現在のページ情報を受け取る
 const { page } = Astro.props as { page: Page<CollectionEntry<'blog'>> };
 
-// 個別記事ページへのURLを生成するヘルパー関数 (他ページで使っているものを流用)
-function getPostUrl(post : CollectionEntry<'blog'>) {
-  if (post.data.url) {
-    return `/${post.data.url}/`;
-  }
-  return `/blog/${post.slug}/`;
+function getPostUrl(post: CollectionEntry<'blog'>) {
+  return post.data.url
+    ? `/${post.data.url}/`
+    : `/blog/${post.id.replace(/\.md$/, '')}/`;
 }
 ---
 
-<BaseLayout title={`ブログ記事一覧 - ${page.currentPage}ページ目`}>
-  <h1>ブログ記事一覧</h1>
-  <p>{page.start + 1}件目から{page.end + 1}件目を表示 ({page.total}件中)</p>
+<BaseLayout title="Blog">
+  <h1>Blog</h1>
+  <p>{page.start + 1}–{page.end + 1} of {page.total} posts</p>
 
   <ul>
-    {/* page.data に現在のページの5件分の記事が入っている */}
     {page.data.map((post: CollectionEntry<'blog'>) => (
       <li>
-        <a href={getPostUrl(post)}>{post.data.title}</a>
+        <a href={getPostUrl(post)}>
+          <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
+          <span class="lang-ja">{post.data.title}</span>
+        </a>
         <span style="font-size: 0.8em; margin-left: 8px;">
-          ({post.data.pubDate.toLocaleDateString()})
+          ({post.data.pubDate.toLocaleDateString('ja-JP')})
         </span>
       </li>
     ))}
   </ul>
-</BaseLayout>
 
-<BaseLayout title={`ブログ記事一覧 - ${page.currentPage}ページ目`}>
-  {/* ... 記事リスト ... */}
-
-  {/* ↓ ここからページネーションリンクを追加 */}
-  <nav aria-label="ページネーション">
-    {/* 前のページへのリンク (page.url.prevが存在する場合のみ表示) */}
+  <nav aria-label="Pagination">
     {page.url.prev ? (
-      <a href={page.url.prev}>&larr; 前のページへ</a>
+      <a href={page.url.prev}>← Prev</a>
     ) : (
-      <span>&larr; 前のページへ</span> // リンク無効表示 (任意)
+      <span style="color: gray;">← Prev</span>
     )}
-
     <span style="margin: 0 1em;">
-      {page.currentPage} / {page.lastPage} ページ
+      {page.currentPage} / {page.lastPage}
     </span>
-
-    {/* 次のページへのリンク (page.url.nextが存在する場合のみ表示) */}
     {page.url.next ? (
-      <a href={page.url.next}>次のページへ &rarr;</a>
+      <a href={page.url.next}>Next →</a>
     ) : (
-      <span>次のページへ &rarr;</span> // リンク無効表示 (任意)
+      <span style="color: gray;">Next →</span>
     )}
   </nav>
-  {/* ↑ ここまでページネーションリンク */}
 </BaseLayout>
