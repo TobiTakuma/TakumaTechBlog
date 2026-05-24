@@ -13,7 +13,7 @@ url: "git-push-error"
 
 This error occurs when your local branch and the remote have diverged — both have commits the other doesn't know about.
 
-```bash
+```
 Initial commit
 ↓
 A ── B ── D   (local)
@@ -47,7 +47,7 @@ After that, `git push` works without issues.
 
 このエラーは同じ地点からリモートとローカルが別々に変更されてしまった状態を表している。
 
-```bash
+```
 最初のコミット
 ↓
 A ── B ── D   (ローカル)
