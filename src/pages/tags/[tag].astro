@@ -45,7 +45,7 @@ function getPostUrl(post: CollectionEntry<'blog'>) {
           <span class="lang-ja">{post.data.title}</span>
         </a>
         <span style="font-size: 0.8em; margin-left: 8px;">
-          ({post.data.pubDate.toLocaleDateString('ja-JP')})
+          {post.data.pubDate.toLocaleDateString('ja-JP')}
         </span>
       </li>
     ))}

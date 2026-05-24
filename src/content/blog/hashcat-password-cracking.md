@@ -115,4 +115,6 @@ hashcat -a 6 -m 0 13445cbc17a1400afce3589e9a969264 rockyou.txt "@?d?d?d"
 
 `rockyou.txt` の辞書に加えて、`@???`（`?d` は任意の数字）を試すマスクを追加している。今回の例では `xxterrixx@420` というパスワードを解読した。
 
+
 </section>
+

@@ -32,7 +32,7 @@ const { title } = Astro.props;
     <script>
       function updateButton() {
         const btn = document.getElementById('lang-toggle');
-        if (btn) btn.textContent = document.documentElement.classList.contains('ja') ? 'English' : '日本語';
+        if (btn) btn.textContent = document.documentElement.classList.contains('ja') ? 'Read in English' : 'Read in Japanese';
       }
 
       document.getElementById('lang-toggle')?.addEventListener('click', () => {

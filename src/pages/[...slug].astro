@@ -40,7 +40,18 @@ const titleEn = post.data.title_en ?? post.data.title;
   </article>
 
   <p>
-    <span class="lang-en"><a href="/blog">← Back to blog</a></span>
-    <span class="lang-ja"><a href="/blog">← 記事一覧へ</a></span>
+    <span class="lang-en"><a id="back-link-en" href="/blog">← Back to blog</a></span>
+    <span class="lang-ja"><a id="back-link-ja" href="/blog">← 記事一覧へ</a></span>
   </p>
 </Layout>
+
+<script>
+  // 来た元がブログ一覧ページならその URL を保存・復元する
+  const referrer = document.referrer;
+  if (referrer && new URL(referrer).pathname.startsWith('/blog')) {
+    sessionStorage.setItem('blogBackUrl', new URL(referrer).pathname);
+  }
+  const backUrl = sessionStorage.getItem('blogBackUrl') ?? '/blog';
+  document.getElementById('back-link-en')!.setAttribute('href', backUrl);
+  document.getElementById('back-link-ja')!.setAttribute('href', backUrl);
+</script>
