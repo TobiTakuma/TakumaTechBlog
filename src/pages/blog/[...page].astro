@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/Layout.astro';
+import { getReadingTime } from '../../utils/readingTime';
 import type { CollectionEntry } from 'astro:content';
 import type { GetStaticPaths, Page } from 'astro';
 
@@ -23,35 +24,50 @@ function getPostUrl(post: CollectionEntry<'blog'>) {
 
 <BaseLayout title="Blog">
   <h1>Blog</h1>
-  <p>{page.start + 1}–{page.end + 1} of {page.total} posts</p>
+  <p style="color: var(--color-text-muted); font-size: 0.9rem; font-family: var(--font-sans);">
+    {page.start + 1}–{page.end + 1} of {page.total} posts
+  </p>
 
-  <ul>
+  <ul class="post-list">
     {page.data.map((post: CollectionEntry<'blog'>) => (
       <li>
-        <a href={getPostUrl(post)}>
-          <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
-          <span class="lang-ja">{post.data.title}</span>
+        <a href={getPostUrl(post)} class="post-link">
+          <div class="post-title">
+            <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
+            <span class="lang-ja">{post.data.title}</span>
+          </div>
+          <div class="post-meta">
+            <span>{post.data.pubDate.toLocaleDateString('en-CA')}</span>
+            <span class="dot">·</span>
+            <span class="lang-en">{getReadingTime(post.body ?? '').en} min read</span>
+            <span class="lang-ja">{getReadingTime(post.body ?? '').ja} 分で読める</span>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <Fragment>
+                <span class="dot">·</span>
+                {post.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </Fragment>
+            )}
+          </div>
         </a>
-        <span style="font-size: 0.8em; margin-left: 8px;">
-          {post.data.pubDate.toLocaleDateString('ja-JP')}
-        </span>
       </li>
     ))}
   </ul>
 
-  <nav aria-label="Pagination">
+  <nav aria-label="Pagination" style="display: flex; align-items: center; gap: 1rem; margin-top: 2rem; font-family: var(--font-sans); font-size: 0.9rem;">
     {page.url.prev ? (
       <a href={page.url.prev}>← Prev</a>
     ) : (
-      <span style="color: gray;">← Prev</span>
+      <span style="color: var(--color-text-muted);">← Prev</span>
     )}
-    <span style="margin: 0 1em;">
+    <span style="color: var(--color-text-muted);">
       {page.currentPage} / {page.lastPage}
     </span>
     {page.url.next ? (
       <a href={page.url.next}>Next →</a>
     ) : (
-      <span style="color: gray;">Next →</span>
+      <span style="color: var(--color-text-muted);">Next →</span>
     )}
   </nav>
 </BaseLayout>

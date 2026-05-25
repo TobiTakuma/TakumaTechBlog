@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { getReadingTime } from '../utils/readingTime';
 
 const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
@@ -20,24 +21,40 @@ function getPostUrl(post: CollectionEntry<'blog'>) {
   <h1 class="lang-en">Welcome to Toiyama Takuma's Blog</h1>
   <h1 class="lang-ja">Toiyama Takumaのブログへようこそ</h1>
 
-  <p>
-    <span class="lang-en"><a href="/blog">View all posts</a></span>
-    <span class="lang-ja"><a href="/blog">記事一覧を見る</a></span>
-  </p>
+  <h2 class="section-title">
+    <span class="lang-en">Recent Posts</span>
+    <span class="lang-ja">新着記事</span>
+  </h2>
 
-  <h2 class="lang-en">Recent Posts</h2>
-  <h2 class="lang-ja">新着記事</h2>
-  <ul>
+  <ul class="post-list">
     {recentPosts.map((post) => (
       <li>
-        <a href={getPostUrl(post)}>
-          <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
-          <span class="lang-ja">{post.data.title}</span>
+        <a href={getPostUrl(post)} class="post-link">
+          <div class="post-title">
+            <span class="lang-en">{post.data.title_en ?? post.data.title}</span>
+            <span class="lang-ja">{post.data.title}</span>
+          </div>
+          <div class="post-meta">
+            <span>{post.data.pubDate.toLocaleDateString('en-CA')}</span>
+            <span class="dot">·</span>
+            <span class="lang-en">{getReadingTime(post.body ?? '').en} min read</span>
+            <span class="lang-ja">{getReadingTime(post.body ?? '').ja} 分で読める</span>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <Fragment>
+                <span class="dot">·</span>
+                {post.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </Fragment>
+            )}
+          </div>
         </a>
-        <span style="font-size: 0.8em; margin-left: 8px;">
-          {post.data.pubDate.toLocaleDateString('ja-JP')}
-        </span>
       </li>
     ))}
   </ul>
+
+  <p style="margin-top: 2rem;">
+    <span class="lang-en"><a href="/blog">View all posts →</a></span>
+    <span class="lang-ja"><a href="/blog">記事一覧を見る →</a></span>
+  </p>
 </Layout>

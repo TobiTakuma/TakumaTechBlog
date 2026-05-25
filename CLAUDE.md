@@ -167,9 +167,92 @@ English summary goes here.
 質問：英語と日本語のフォントを別々にできるか？  
 回答：CSSフォントスタックで可能。`--font-en` と `--font-ja` を別々に定義し、`html.ja body` で切り替え。JetBrains Monoのように日本語グリフがないフォントは自動的に次のフォントにフォールバックするので、`"JetBrains Mono", "Noto Sans JP"` と並べれば英数字はJetBrains Mono・日本語はNoto Sans JPになる。
 
+## 2026/05/23 - 記事内のリンクにアイコンやプレビューを表示したい
+質問：記事内に貼ったURLをNotionのようにプレビュー表示したり、Qiitaのアイコンを出せるか？  
+回答：標準Markdownだけでは不可。アイコンだけなら `<img src="https://qiita.com/favicon.ico" width="16">` をMarkdown内に直接書ける。OGPカード（タイトル・説明付きプレビュー）はMDXへの移行とカスタムコンポーネントの実装が必要。
+
+## 2026/05/25 - フォントをセルフホストすると軽くなるか
+質問：フォントの情報をフォルダの中に入れておいたら軽くなる？  
+回答：軽くなる。現在は Google Fonts から読み込んでいるため、外部サーバーへの DNS 解決と TLS 握手が 2 回発生する（fonts.googleapis.com と fonts.gstatic.com）。セルフホストすると Cloudflare Pages の CDN から同じ接続で配信できるので、初回訪問時に約 100-200ms 速くなる。プライバシー面でも Google にトラフィックが渡らない利点がある。ついでに使うウェイトの絞り込み・Latin サブセット化・`font-display: swap` を指定すると更に軽くなる。
+
+## 2026/05/25 - フッターの RSS と © 表記の意味
+質問：下にある RSS と © 2026 Takuma Toiyama って何？  
+回答：RSS は読者が「購読」できる仕組み。`/rss.xml` を RSS リーダーアプリ（Feedly等）に登録すると新着記事が通知される。© は著作権表示で「このサイトのコンテンツは私のもの」というサイン。書かなくても著作権は自動発生するので法的効力は実質ない。両方とも消しても問題なし。
+
+## 2026/05/24 - JetBrains Monoで日本語は表示されるか
+質問：JetBrains Monoに日本語グリフはないと言っていたが、実際には表示されている  
+回答：実際に表示できていたため、フォントをJetBrains Monoに一本化。`--font-en`/`--font-ja` の区別をなくし `--font-body: "JetBrains Mono", sans-serif` に統一した。
+
 ---
 
 # 変更ログ
+
+## 2026/05/25 (最新6)
+post-nav のサイズがまだ揃わない問題の再修正。
+
+- `src/styles/global.css`: `.post-nav .title` に `line-height: 1.4` を明示（body の 1.8 継承を打ち切る）。`min-height` を `height: calc(0.95rem * 1.4 * 2)` に変更し、タイトルが 1 行でも 2 行でも常に 2 行分の固定高さに。これでどのページでも両カードのサイズが完全に揃う。
+
+## 2026/05/25 (最新5)
+記事日付・読了時間・タグなど UI のフォントが本文と違うのを統一するよう求められた。
+
+- `src/styles/global.css`: `--font-sans` を `system-ui, -apple-system, sans-serif` から `"JetBrains Mono", sans-serif` に変更。これによりナビ・メタ情報・タグ・フッター・テーブル・post-nav ラベル等もすべて JetBrains Mono になる。日本語文字は sans-serif フォールバックで表示（既存挙動と同じ）。
+
+## 2026/05/25 (最新4)
+記事ページ末尾の Older/Newer カードがタイトルの長さで高さがバラつく問題の修正を求められた。
+
+- `src/styles/global.css`: `.post-nav .title` に `-webkit-line-clamp: 2`（2 行で省略）、`min-height`（短いタイトルでも 2 行分の高さを確保）、`overflow-wrap: break-word` を追加。両カードのサイズが常に揃う。
+
+## 2026/05/25 (最新3)
+JetBrains Mono をセルフホスト化するよう求められた。Google Fonts への外部リクエストを排除して初回ロードを高速化。
+
+- `public/fonts/JetBrainsMono-latin.woff2` (31KB): 可変フォント。normal の 400/500/700 を 1 ファイルでカバー（Google Fonts API が返す Latin サブセット済み woff2 をダウンロード）
+- `public/fonts/JetBrainsMono-italic-latin.woff2` (22KB): italic 専用
+- `src/styles/global.css`: 冒頭の `@import url('https://fonts.googleapis.com/...')` を削除し、`@font-face` 宣言 2 つ（normal / italic）に置き換え。`font-weight: 100 800` で可変フォントの全範囲をカバー、`font-display: swap` でフォント読み込み中もフォールバック表示。
+
+合計フォントサイズ ~53KB、外部リクエスト 0 件（旧: fonts.googleapis.com + fonts.gstatic.com の 2 ドメイン）。初回訪問で約 100-200ms の短縮が見込める。
+
+矢印（→ ←）など Latin サブセットに含まれない文字は font stack の `sans-serif` にフォールバックする（既存の挙動と同じ）。
+
+## 2026/05/25 (最新2)
+ダークモード・トップページのAbout抜粋・description プレビューの削除を求められた。
+
+- `src/layouts/Layout.astro`: テーマ判定スクリプト、`#theme-toggle` ボタン、トグル用 JS を削除。
+- `src/styles/global.css`: `html.dark` ブロック、`--color-hero-bg` 変数、`.hero` 関連スタイル、`.post-desc` スタイルを削除。
+- `src/pages/index.astro`: ヒーロー section を削除し、元の `<h1>Welcome to ...` 形式に戻した。description プレビュー行を削除。
+- `src/pages/blog/[...page].astro`: description プレビュー行を削除。
+
+About ページ自体（/about）とナビの About リンクは残置。
+
+## 2026/05/25
+サイトのリッチ化を求められた（軽量さは維持）。モックアップで確認した機能を本番に全部入れた。
+
+- `src/styles/global.css`: ダークモード用CSS変数（`html.dark`）、進捗バー、アイコンボタン、ヒーロー、section-title、post-list（description + meta + tag）、article-meta、コピーボタン、post-nav（前/次）、footer のスタイルを追加。
+- `src/layouts/Layout.astro`: 進捗バー要素、ダークモードトグル＋言語トグル（アイコンボタン化）、About リンク追加、OGP/Twitter meta、RSS link、フッター（GitHub `https://github.com/TobiTakuma` / RSS）、コードコピーボタンを全 `<article> pre` に自動付与する JS、FOUC 防止スクリプトにテーマ判定を追加。
+- `src/utils/readingTime.ts` 新規作成: 記事本文から英語の単語数と日本語の文字数を別々にカウントし、英語=200wpm・日本語=500cpmで読了時間を算出。
+- `src/pages/index.astro`: ヒーローセクション（日英）、`post-list` クラスで description + 読了時間 + タグバッジ表示。`<>` は Astro パーサで弾かれたので `<Fragment>` を使用。
+- `src/pages/blog/[...page].astro`: 同様に `post-list` 形式に変更。
+- `src/pages/[...slug].astro`: 記事メタを `article-meta` で統一（日付・読了時間・タグバッジ）、前/次の記事リンク（`post-nav`）を末尾に追加。`getStaticPaths` で sorted 配列から newer/older を渡す。
+- `src/pages/about.astro` 新規作成: 日英の自己紹介ページ。
+- `src/pages/rss.xml.ts` 新規作成: `@astrojs/rss` で RSS フィード生成。
+- `astro.config.mjs`: `site: 'https://takumatechblog.pages.dev'` を設定（RSS の絶対 URL 用、カスタムドメインに変更したら要更新）。
+- `package.json`: `@astrojs/rss` を依存に追加。
+
+ビルド確認: `npm run build` で全 26 ページ + `/rss.xml` が正常生成。
+
+## 2026/05/24
+making-website記事のレビュー・修正・日英分割を求められた。
+
+- `src/content/blog/making website.md`: 誤字修正（ClaudFlare→Cloudflare、Regisrar→Registrar）、DNS説明の不正確な記述を修正（「DNSを変えられない」→「ネームサーバーをCloudflare以外に変更できない」）、テスト文字列を削除、英語セクションを新規作成（シンプルな文法で）、日英セクションに分割。
+
+## 2026/05/24
+フォントをJetBrains Monoに統一するよう求められた。
+
+- `src/styles/global.css`: `--font-en`/`--font-ja` を廃止し `--font-body: "JetBrains Mono", sans-serif` に一本化。Noto Sans JPのimportも削除。`html.ja` のフォント上書きも削除。
+
+## 2026/05/24
+記事一覧から記事を開いた後、元のページ（2ページ目など）に戻れるようにするよう求められた。
+
+- `src/pages/[...slug].astro`: `document.referrer` でどのブログ一覧ページから来たかを取得し `sessionStorage` に保存。「Back to blog」リンクがその URL を使って戻る。直接アクセスの場合は `/blog` にフォールバック。
 
 ## 2026/05/23 (最新)
 フォント・リスト表示の調整を複数求められた。

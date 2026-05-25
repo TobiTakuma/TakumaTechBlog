@@ -1,45 +1,85 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { getReadingTime } from '../utils/readingTime';
+import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => {
+  const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return sorted.map((post, i) => {
     const slugPath = post.data.url ?? `blog/${post.id.replace(/\.md$/, '')}`;
+    // 並び順は降順（新→古）なので、次のインデックス＝より古い記事、前のインデックス＝より新しい記事
+    const newer = i > 0 ? sorted[i - 1] : null;
+    const older = i < sorted.length - 1 ? sorted[i + 1] : null;
     return {
       params: { slug: slugPath },
-      props: { post },
+      props: { post, newer, older },
     };
   });
 }
 
-const { post } = Astro.props;
+function getPostUrl(post: CollectionEntry<'blog'>) {
+  return post.data.url
+    ? `/${post.data.url}/`
+    : `/blog/${post.id.replace(/\.md$/, '')}/`;
+}
+
+const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
 const titleEn = post.data.title_en ?? post.data.title;
+const rt = getReadingTime(post.body ?? '');
 ---
-<Layout title={titleEn}>
+<Layout title={titleEn} description={post.data.description}>
   <article>
-    <h1 class="lang-en">{titleEn}</h1>
-    <h1 class="lang-ja">{post.data.title}</h1>
+    <header>
+      <h1 class="lang-en">{titleEn}</h1>
+      <h1 class="lang-ja">{post.data.title}</h1>
 
-    <p>{post.data.pubDate.toLocaleDateString('ja-JP')}</p>
+      <div class="article-meta">
+        <span>{post.data.pubDate.toLocaleDateString('en-CA')}</span>
+        <span class="dot">·</span>
+        <span class="lang-en">{rt.en} min read</span>
+        <span class="lang-ja">{rt.ja} 分で読める</span>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <Fragment>
+            <span class="dot">·</span>
+            {post.data.tags.map((tag) => (
+              <a href={`/tags/${tag}`} class="tag">{tag}</a>
+            ))}
+          </Fragment>
+        )}
+      </div>
+    </header>
 
-    {post.data.tags && post.data.tags.length > 0 && (
-      <p>
-        Tags: {post.data.tags.map((tag, i) => (
-          <span>
-            <a href={`/tags/${tag}`}>{tag}</a>
-            {i < post.data.tags!.length - 1 ? ', ' : ''}
-          </span>
-        ))}
-      </p>
-    )}
-
-    <hr />
     <Content />
+
+    {(newer || older) && (
+      <nav class="post-nav" aria-label="Article navigation">
+        {newer ? (
+          <a href={getPostUrl(newer)}>
+            <div class="label">← <span class="lang-en">Newer</span><span class="lang-ja">新しい記事</span></div>
+            <div class="title">
+              <span class="lang-en">{newer.data.title_en ?? newer.data.title}</span>
+              <span class="lang-ja">{newer.data.title}</span>
+            </div>
+          </a>
+        ) : <div></div>}
+        {older ? (
+          <a href={getPostUrl(older)} class="next">
+            <div class="label"><span class="lang-en">Older</span><span class="lang-ja">古い記事</span> →</div>
+            <div class="title">
+              <span class="lang-en">{older.data.title_en ?? older.data.title}</span>
+              <span class="lang-ja">{older.data.title}</span>
+            </div>
+          </a>
+        ) : <div></div>}
+      </nav>
+    )}
   </article>
 
-  <p>
+  <p style="margin-top: 2rem;">
     <span class="lang-en"><a id="back-link-en" href="/blog">← Back to blog</a></span>
     <span class="lang-ja"><a id="back-link-ja" href="/blog">← 記事一覧へ</a></span>
   </p>

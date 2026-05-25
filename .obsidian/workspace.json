@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/blog/making website.md",
+                "file": "CLAUDE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "making website"
+              "title": "CLAUDE"
             }
           }
         ],
@@ -213,10 +213,34 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "5fb643b25c8ce38c",
+  "active": "8daa5f6b5092d9a6",
   "lastOpenFiles": [
-    "src/content/blog/hashcat-password-cracking.md",
+    "dist/another-post/index.html",
+    "dist/another-post",
+    "dist/my-first-post/index.html",
+    "dist/my-first-post",
+    "dist/hashcat-password-cracking/index.html",
+    "dist/hashcat-password-cracking",
+    "dist/git-push-error/index.html",
+    "dist/git-push-error",
+    "dist/artemis-ii/index.html",
+    "dist/artemis-ii",
+    "dist/datetest/index.html",
+    "dist/images/artemis-ii-launch-up-close.jpg",
+    "dist/favicon.svg",
     "src/content/blog/making website.md",
+    "node_modules/fast-xml-builder/README.md",
+    "node_modules/fast-xml-builder/CHANGELOG.md",
+    "node_modules/@nodable/entities/README.md",
+    "node_modules/@astrojs/rss/node_modules/zod/README.md",
+    "node_modules/@astrojs/rss/README.md",
+    "node_modules/xml-naming/README.md",
+    "node_modules/fast-xml-parser/README.md",
+    "node_modules/fast-xml-parser/CHANGELOG.md",
+    "node_modules/strnum/README.md",
+    "node_modules/strnum/CHANGELOG.md",
+    "node_modules/path-expression-matcher/README.md",
+    "src/content/blog/hashcat-password-cracking.md",
     "src/content/blog/git-push-error.md",
     "src/content/blog/artemis-ii.md",
     "src/content/blog/another-post.md",
@@ -227,27 +251,10 @@
     "src/content/blog/my-first-post.md",
     "public/favicon.svg",
     "public/t-B-italic.svg",
-    "CLAUDE.md.tmp.3036.f324546bac0d",
-    "src/styles/global.css",
-    "src/styles",
     "public/images/artemis-ii-launch-up-close.jpg",
     "src/content/blog/dateTest.md",
     "templates/blog-post.md",
-    "src/pages/tags/[tag].astro.tmp.3036.80bffd866407",
     "src/content/blog/URL test.md",
-    "src/content/blog/URLのテスト.md",
-    "src/content/blog/URLTest.md",
-    "src/content/blog/いけるか？.md",
-    "src/content/blog/ええやん.md",
-    "src/content/blog/難しい.md",
-    "dist/tags/Artemis/index.html",
-    "dist/tags/Artemis",
-    "dist/tags/Space/index.html",
-    "dist/tags/Space",
-    "dist/pages/tags.astro.mjs",
-    "dist/pages/tags",
-    "dist/images/artemis-ii-launch-up-close.jpg",
-    "dist/favicon.svg",
-    "src/content/blog/test.md"
+    "src/content/blog/URLのテスト.md"
   ]
 }
