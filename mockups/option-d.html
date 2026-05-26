@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Option D — Language Toggle Migration Mockup</title>
+
+<style>
+  :root {
+    --color-bg:         #ffffff;
+    --color-text:       #1a1a1a;
+    --color-text-muted: #666666;
+    --color-accent:     #2563eb;
+    --color-accent-hover: #1d4ed8;
+    --color-border:     #e5e7eb;
+    --color-code-bg:    #f3f4f6;
+
+    --font-body: "JetBrains Mono", "Courier New", monospace;
+    --font-sans: "JetBrains Mono", "Courier New", monospace;
+
+    --font-size-base: 1.05rem;
+    --line-height:    1.8;
+    --max-width:      720px;
+
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 4rem;
+
+    --transition: 220ms ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family:  var(--font-body);
+    font-size:    var(--font-size-base);
+    line-height:  var(--line-height);
+    color:        var(--color-text);
+    background:   var(--color-bg);
+    padding:      var(--space-lg) var(--space-md) var(--space-xl);
+  }
+
+  nav, main, footer { max-width: var(--max-width); margin: 0 auto; }
+
+  /* ナビ */
+  nav {
+    display:     flex;
+    align-items: center;
+    gap:         var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom:  1px solid var(--color-border);
+    margin-bottom:  var(--space-lg);
+    font-family: var(--font-sans);
+    font-size:   0.95rem;
+  }
+  nav a {
+    color: var(--color-text);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  nav a:hover { color: var(--color-accent); }
+  .nav-actions {
+    margin-left: auto;
+    display: flex;
+    gap: var(--space-sm);
+  }
+
+  /* ナビの言語切替ボタン — スクロールでフェードアウト */
+  #lang-toggle-nav {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0;
+    transition: opacity var(--transition), transform var(--transition),
+                background var(--transition), border-color var(--transition);
+  }
+  #lang-toggle-nav:hover {
+    background: var(--color-code-bg);
+    border-color: var(--color-text-muted);
+  }
+  /* スクロール時はナビボタンを消す（下に少し下げながらフェード） */
+  #lang-toggle-nav.is-scrolled {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+  }
+
+  /* タイポグラフィ */
+  h1 { font-size: 1.9rem; margin-bottom: var(--space-sm); letter-spacing: -0.01em; }
+  h2 { font-size: 1.3rem; margin-top: var(--space-xl); margin-bottom: var(--space-sm); }
+  p { margin-bottom: var(--space-md); }
+
+  .meta {
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  /* ============================================================
+     フローティングボタン — スクロールで右下に出現
+     ============================================================ */
+  .floating-btn {
+    position: fixed;
+    right: var(--space-md);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity var(--transition), transform var(--transition),
+                color var(--transition), border-color var(--transition);
+    z-index: 50;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .floating-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .floating-btn:hover {
+    color: var(--color-accent);
+    border-color: var(--color-text-muted);
+  }
+  .floating-btn svg { width: 16px; height: 16px; }
+
+  /* スタック位置（下から: 一番上に戻る → 言語切替） */
+  #back-to-top         { bottom: var(--space-md); }
+  #lang-toggle-floating { bottom: calc(var(--space-md) + 48px); }
+
+  /* 日英切り替え */
+  .lang-ja { display: none; }
+  html.ja .lang-en { display: none; }
+  html.ja .lang-ja { display: revert; }
+
+  /* デモ用ヒント表示 */
+  .hint {
+    position: fixed;
+    top: var(--space-md);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+</style>
+</head>
+<body>
+
+<div class="hint">
+  <span class="lang-en">↓ Scroll down to see the language button migrate to the bottom-right.</span>
+  <span class="lang-ja">↓ スクロールすると言語ボタンが右下に「移動」します。</span>
+</div>
+
+<nav>
+  <a href="#">Home</a>
+  <a href="#">Blog</a>
+  <a href="#">Tags</a>
+  <a href="#">About</a>
+  <div class="nav-actions">
+    <button id="lang-toggle-nav" title="Toggle language" aria-label="Toggle language">JA</button>
+  </div>
+</nav>
+
+<main>
+  <article>
+    <h1 class="lang-en">Option D — Language Button Migration Demo</h1>
+    <h1 class="lang-ja">案D — 言語ボタンの移動デモ</h1>
+    <div class="meta">
+      <span>2026-05-25</span> · <span class="lang-en">3 min read</span><span class="lang-ja">3 分で読める</span> · Mockup
+    </div>
+
+    <section class="lang-en">
+      <h2>How it works</h2>
+      <p>When the page is at the top, the language toggle lives in the navigation bar — a small <code>JA</code>/<code>EN</code> button on the right side of the nav.</p>
+      <p>As soon as you scroll past 300 pixels, two things happen at the same time:</p>
+      <p>1. The nav button fades out (and slides down 4px to suggest motion).</p>
+      <p>2. A round floating button fades in at the bottom-right of the viewport.</p>
+      <p>The user reads this as <em>the same button migrating</em>, not as two separate UI elements. The transition is 220ms — slow enough to perceive, fast enough not to feel sluggish.</p>
+
+      <h2>Why this works</h2>
+      <p>Two buttons never coexist on the screen at the same time. That removes the visual noise of "which button do I press?"</p>
+      <p>The toggle remains accessible from anywhere on the page. You never need to scroll back up just to switch languages.</p>
+      <p>The migration cue is gentle. Because the fade is slow and both endpoints are visible (one fading out, one fading in), the brain stitches them together as one continuous element.</p>
+
+      <h2>Implementation notes</h2>
+      <p>The trick is that both buttons share the same click handler and label state. They are technically two DOM elements, but functionally one control.</p>
+      <p>A single scroll listener toggles a class on each: <code>.is-scrolled</code> on the nav button (hides it) and <code>.visible</code> on the floating button (shows it). Both transitions run with the same duration so they feel synchronized.</p>
+
+      <h2>Try it</h2>
+      <p>Click either button to toggle the language. Scroll down and back up to see the transition. Try clicking the floating button after scrolling to confirm it works identically to the nav button.</p>
+      <p>Long content follows below so the scroll area is meaningful.</p>
+      <p>The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog.</p>
+      <p>The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog.</p>
+      <p>The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog.</p>
+      <p>The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog.</p>
+      <p>The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog. The brown fox jumps over the lazy dog.</p>
+    </section>
+
+    <section class="lang-ja">
+      <h2>仕組み</h2>
+      <p>ページ最上部では、言語切替はナビゲーションバーの中にある——ナビ右側にある小さな <code>JA</code>/<code>EN</code> ボタンとして。</p>
+      <p>300px以上スクロールすると、同時に二つのことが起こる：</p>
+      <p>1. ナビボタンがフェードアウト（4px 下に少しずれて移動感を出す）。</p>
+      <p>2. 画面右下に円形のフローティングボタンがフェードイン。</p>
+      <p>ユーザーには「同じボタンが移動した」と認識される。2 つの別の UI 要素には見えない。トランジションは 220ms——気づける速さと、もたつかない速さの間。</p>
+
+      <h2>なぜこれが効くか</h2>
+      <p>画面上に同時に 2 つのボタンが存在することがない。「どっちのボタンを押せばいいのか」という視覚的ノイズが消える。</p>
+      <p>切替ボタンはどこからでもアクセスできる。言語を変えるためだけに上までスクロールする必要はない。</p>
+      <p>移動の合図は控えめ。フェードがゆっくりで、両端の位置が同時に見えている（片方が消えながら片方が現れる）ため、脳が「ひとつの連続した要素」として認識する。</p>
+
+      <h2>実装メモ</h2>
+      <p>仕掛けは、両ボタンが同じクリックハンドラとラベル状態を共有していること。DOM 要素としては 2 つだが、機能的には 1 つのコントロール。</p>
+      <p>スクロールリスナーがそれぞれにクラスを付け外しする：ナビボタンには <code>.is-scrolled</code>（非表示化）、フローティングには <code>.visible</code>（表示化）。両方のトランジションは同じ時間なので、同期して動いて見える。</p>
+
+      <h2>試してみる</h2>
+      <p>どちらのボタンをクリックしても言語が切り替わる。スクロールして戻ってみて移動を確認してほしい。スクロール後にフローティングボタンを押せば、ナビボタンと同じ動作をすることが分かる。</p>
+      <p>スクロールエリアを確保するため、以下に長文ダミーが続く。</p>
+      <p>いろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて。いろはにほへと ちりぬるを わかよたれそ。</p>
+      <p>いろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて。いろはにほへと ちりぬるを わかよたれそ。</p>
+      <p>いろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて。いろはにほへと ちりぬるを わかよたれそ。</p>
+      <p>いろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて。いろはにほへと ちりぬるを わかよたれそ。</p>
+      <p>いろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて。いろはにほへと ちりぬるを わかよたれそ。</p>
+    </section>
+  </article>
+</main>
+
+<!-- フローティング言語切替ボタン -->
+<button id="lang-toggle-floating" class="floating-btn" aria-label="Toggle language" title="Toggle language">JA</button>
+
+<!-- 一番上に戻るボタン -->
+<button id="back-to-top" class="floating-btn" aria-label="Back to top" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const navBtn = document.getElementById('lang-toggle-nav');
+  const floatBtn = document.getElementById('lang-toggle-floating');
+
+  // 両ボタンのラベルを同期
+  function updateLabels() {
+    const label = root.classList.contains('ja') ? 'EN' : 'JA';
+    if (navBtn) navBtn.textContent = label;
+    if (floatBtn) floatBtn.textContent = label;
+  }
+  function toggleLang() {
+    root.classList.toggle('ja');
+    updateLabels();
+  }
+  navBtn?.addEventListener('click', toggleLang);
+  floatBtn?.addEventListener('click', toggleLang);
+  updateLabels();
+
+  // スクロール連動: ナビボタンを消し、フローティングを出す（クロスフェード）
+  function onScroll() {
+    const scrolled = window.scrollY > 300;
+    if (navBtn) navBtn.classList.toggle('is-scrolled', scrolled);
+    if (floatBtn) floatBtn.classList.toggle('visible', scrolled);
+    document.getElementById('back-to-top')?.classList.toggle('visible', scrolled);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // 一番上に戻るボタン
+  document.getElementById('back-to-top')?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>

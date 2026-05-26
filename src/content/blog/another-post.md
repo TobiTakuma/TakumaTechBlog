@@ -7,18 +7,14 @@ tags: ["Astro", "Blog"]
 url: another-post
 ---
 
-<section lang="en">
+# <!--en-->
 
 This is the second post on this blog.
 
 Just getting started — more content coming soon.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 このブログの2つ目の投稿です。
 
 まだ始めたばかりなので、これからどんどん記事を書いていく予定です。
-
-</section>

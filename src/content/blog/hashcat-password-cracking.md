@@ -7,7 +7,7 @@ tags: ["Security", "CTF"]
 url: "hashcat-password-cracking"
 ---
 
-<section lang="en">
+# <!--en-->
 
 ## Install via Homebrew
 
@@ -60,9 +60,7 @@ hashcat -a 6 -m 0 13445cbc17a1400afce3589e9a969264 rockyou.txt "@?d?d?d"
 
 This combines the `rockyou.txt` wordlist with a mask that appends `@` followed by three digits. In this example, the target password was `xxterrixx@420`.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 ## hashcatをbrewでインストール
 
@@ -114,7 +112,3 @@ hashcat -a 6 -m 0 13445cbc17a1400afce3589e9a969264 rockyou.txt "@?d?d?d"
 ```
 
 `rockyou.txt` の辞書に加えて、`@???`（`?d` は任意の数字）を試すマスクを追加している。今回の例では `xxterrixx@420` というパスワードを解読した。
-
-
-</section>
-

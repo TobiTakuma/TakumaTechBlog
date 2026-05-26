@@ -433,6 +433,47 @@ footer .spacer { margin-left: auto; }
 footer .icon { width: 14px; height: 14px; }
 
 /* ============================================================
+   フローティングボタン — 右下にスタックして表示（スクロールで出現）
+   ============================================================ */
+.floating-btn {
+  position: fixed;
+  right: var(--space-md);
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(5px);
+  transition: opacity var(--transition), transform var(--transition),
+              color var(--transition), border-color var(--transition);
+  z-index: 50;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.floating-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.floating-btn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-text-muted);
+}
+.floating-btn svg { width: 16px; height: 16px; }
+
+/* 縦に積む（下から: 一番上に戻る → 言語切替） */
+#back-to-top         { bottom: var(--space-md); }
+#lang-toggle-floating { bottom: calc(var(--space-md) + 48px); }
+
+/* ============================================================
    日英切り替え（既存ロジック）
    ============================================================ */
 .lang-ja, section[lang="ja"] { display: none; }

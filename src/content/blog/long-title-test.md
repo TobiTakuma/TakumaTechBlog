@@ -7,14 +7,10 @@ tags: ["Dev log"]
 url: "long-title-test"
 ---
 
-<section lang="en">
+# <!--en-->
 
 This is a test article for checking long title truncation.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 タイトルの省略表示をテストするための記事です。
-
-</section>

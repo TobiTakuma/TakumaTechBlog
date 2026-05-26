@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "CLAUDE.md",
+                "file": "src/content/blog/dateTest.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CLAUDE"
+              "title": "dateTest"
             }
           }
         ],
@@ -213,7 +213,7 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "8daa5f6b5092d9a6",
+  "active": "5fb643b25c8ce38c",
   "lastOpenFiles": [
     "dist/another-post/index.html",
     "dist/another-post",
@@ -223,12 +223,23 @@
     "dist/hashcat-password-cracking",
     "dist/git-push-error/index.html",
     "dist/git-push-error",
+    "dist/template-test/index.html",
+    "dist/template-test",
     "dist/artemis-ii/index.html",
-    "dist/artemis-ii",
-    "dist/datetest/index.html",
     "dist/images/artemis-ii-launch-up-close.jpg",
     "dist/favicon.svg",
+    "src/content/blog/self-hosting-fonts.md",
+    "src/content/blog/dateTest.md",
+    "src/content/blog/artemis-ii.md",
+    "src/content/blog/another-post.md",
+    "src/content/blog/git-push-error.md",
+    "src/content/blog/hashcat-password-cracking.md",
+    "src/content/blog/template test.md",
+    "src/content/blog/URL test.md",
+    "templates/blog-post.md",
     "src/content/blog/making website.md",
+    "src/content/blog/my-first-post.md",
+    "CLAUDE.md",
     "node_modules/fast-xml-builder/README.md",
     "node_modules/fast-xml-builder/CHANGELOG.md",
     "node_modules/@nodable/entities/README.md",
@@ -240,21 +251,10 @@
     "node_modules/strnum/README.md",
     "node_modules/strnum/CHANGELOG.md",
     "node_modules/path-expression-matcher/README.md",
-    "src/content/blog/hashcat-password-cracking.md",
-    "src/content/blog/git-push-error.md",
-    "src/content/blog/artemis-ii.md",
-    "src/content/blog/another-post.md",
     "src/content/blog/long-title-test.md",
-    "CLAUDE.md",
     "src/content/blog/testtest.md",
-    "src/content/blog/template test.md",
-    "src/content/blog/my-first-post.md",
     "public/favicon.svg",
     "public/t-B-italic.svg",
-    "public/images/artemis-ii-launch-up-close.jpg",
-    "src/content/blog/dateTest.md",
-    "templates/blog-post.md",
-    "src/content/blog/URL test.md",
-    "src/content/blog/URLのテスト.md"
+    "public/images/artemis-ii-launch-up-close.jpg"
   ]
 }

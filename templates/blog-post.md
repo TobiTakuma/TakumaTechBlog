@@ -11,22 +11,10 @@ tags: []
 url: <% title.toLowerCase().replace(/\s+/g, '-') %>
 ---
 
-<section lang="en">
+# <!--en-->
+
 this is English section.
 
-</section>
+# <!--ja-->
 
-<section lang="en">
-
-
-
-</section>
-<section lang="ja">
 ここは日本語
-
-</section>
-<section lang="ja">
-
-
-
-</section>

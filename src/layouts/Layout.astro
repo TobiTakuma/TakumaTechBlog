@@ -64,6 +64,14 @@ const siteDescription = description ?? "Notes, discoveries, and writings by Taku
       <span class="spacer">© 2026 Takuma Toiyama</span>
     </footer>
 
+    <!-- フローティング言語切替ボタン（スクロールで出現） -->
+    <button id="lang-toggle-floating" class="floating-btn" aria-label="Toggle language" title="Toggle language">JA</button>
+
+    <!-- 一番上に戻るボタン（スクロールで出現） -->
+    <button id="back-to-top" class="floating-btn" aria-label="Back to top" title="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
     <script>
       // 読書進捗バー
       const progress = document.getElementById('progress');
@@ -77,18 +85,34 @@ const siteDescription = description ?? "Notes, discoveries, and writings by Taku
         updateProgress();
       }
 
-      // 言語切り替え
+      // 言語切り替え（ナビとフローティング、両方を同期）
       const root = document.documentElement;
-      function updateLangButton() {
-        const btn = document.getElementById('lang-toggle');
-        if (btn) btn.textContent = root.classList.contains('ja') ? 'EN' : 'JA';
+      const langButtons = [document.getElementById('lang-toggle'), document.getElementById('lang-toggle-floating')];
+      function updateLangButtons() {
+        const label = root.classList.contains('ja') ? 'EN' : 'JA';
+        langButtons.forEach(btn => { if (btn) btn.textContent = label; });
       }
-      document.getElementById('lang-toggle')?.addEventListener('click', () => {
+      function toggleLang() {
         root.classList.toggle('ja');
         sessionStorage.setItem('lang', root.classList.contains('ja') ? 'ja' : 'en');
-        updateLangButton();
+        updateLangButtons();
+      }
+      langButtons.forEach(btn => btn?.addEventListener('click', toggleLang));
+      updateLangButtons();
+
+      // スクロール連動でフローティングボタンを表示／非表示
+      const floatingBtns = document.querySelectorAll('.floating-btn');
+      const toggleFloating = () => {
+        const visible = window.scrollY > 300;
+        floatingBtns.forEach(btn => btn.classList.toggle('visible', visible));
+      };
+      window.addEventListener('scroll', toggleFloating, { passive: true });
+      toggleFloating();
+
+      // 一番上に戻るボタンのクリック
+      document.getElementById('back-to-top')?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-      updateLangButton();
 
       // コードブロックのコピーボタン（全 pre に自動付与）
       document.querySelectorAll('article pre').forEach((pre) => {

@@ -2,12 +2,13 @@
 title: "push時エラー「error: failed to push some refs」の原因と解決法"
 title_en: "Git Push Error: failed to push some refs"
 pubDate: 2026-04-30T10:00
-description: "ローカルとリモートが分岐した際に発生するpushエラーの解決法"
-tags: ["Git", "Dev log"]
-url: "git-push-error"
+description: ローカルとリモートが分岐した際に発生するpushエラーの解決法
+tags:
+  - Git
+url: git-push-error
 ---
 
-<section lang="en">
+# <!--en-->
 
 ## Problem
 
@@ -39,9 +40,7 @@ A -- B -- C -- D
 
 After that, `git push` works without issues.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 ## 問題
 
@@ -72,5 +71,3 @@ A -- B -- C -- D
 ```
 
 と綺麗に並べることができ、その後にpushすると問題なく更新できた。
-
-</section>

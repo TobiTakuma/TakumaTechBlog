@@ -34,23 +34,24 @@ url: "article-slug"
 
 ### 本文（日英切り替えあり）
 
+H1 + HTMLコメントを言語マーカーとして使う：
+
 ```markdown
-<section lang="en">
+# <!--en-->
 
 English summary goes here.
 **Bold** and other Markdown work fine.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 日本語の詳しい本文をここに書く。
 **太字**などのMarkdown記法も使える。
-
-</section>
 ```
 
-**注意：`<section>` タグの直後は必ず空行を入れる。** 空行がないと内部がMarkdownとして処理されない。
+**仕組み：**
+- `# <!--en-->` と `# <!--ja-->` をマーカーにして、それ以降のコンテンツが次のマーカーまで `<section lang="x">` で囲まれる（remarkプラグイン `src/remark/lang-sections.mjs` で変換）
+- Obsidianプレビューではコメントが透明なので「空のH1」として表示される。それでも見出し扱いなので折りたたみ・Outlineが機能する
+- 直後に空行を入れるのは推奨（普通のMarkdownと同じ）
 
 ### 画像の挿入
 
@@ -186,6 +187,41 @@ English summary goes here.
 ---
 
 # 変更ログ
+
+## 2026/05/25 (最新11)
+案D は採用せず現状維持。フローティングボタン出現時のスライド距離だけ控えめに調整するよう求められた。
+
+- `src/styles/global.css`: `.floating-btn` の `transform: translateY(8px)` を `translateY(5px)` に変更。出現時の上方向への動きが少しだけ抑えめになる。
+
+## 2026/05/25 (最新10)
+言語切替ボタンの UX について案D（ナビボタンが消えてフローティングに「移動」するクロスフェード）の検証モックアップ作成を求められた。
+
+- `mockups/option-d.html` 新規作成: スクロール 300px 超で `#lang-toggle-nav` に `.is-scrolled` を付けて非表示化、同時に `#lang-toggle-floating` に `.visible` を付けて出現させるクロスフェード挙動を実装。両方とも `transition: 220ms ease` で同期。本番には未適用、Obsidian/ブラウザで動作確認用。
+
+## 2026/05/25 (最新9)
+言語切替ボタンもスクロールに追従するよう求められた。
+
+- `src/layouts/Layout.astro`: `<button id="lang-toggle-floating" class="floating-btn">` をフローティングで追加（一番上に戻るボタンの上に縦積み）。ナビの `#lang-toggle` とラベル・状態を同期するよう JS をリファクタリング（`langButtons` 配列で両方扱う）。
+- `src/styles/global.css`: 個別の `#back-to-top` スタイルを `.floating-btn` 共通クラスに昇格。`#back-to-top` と `#lang-toggle-floating` は `bottom` の値だけ差別化。
+- スクロール 300px 超で `.visible` を一括付与し、両ボタンが同時に出現。
+
+## 2026/05/25 (最新8)
+画面右下に「一番上に戻る」ボタンの追加を求められた。
+
+- `src/layouts/Layout.astro`: `<button id="back-to-top">`（上矢印 SVG アイコン）をフッターの後に追加。スクロール量が 300px を超えたら `.visible` クラスを付与して表示、クリックで `window.scrollTo({ top: 0, behavior: 'smooth' })`。
+- `src/styles/global.css`: 右下固定の円形ボタン（40px、`--color-border` のボーダー）。デフォルト `opacity: 0` + `pointer-events: none` で完全非表示、`.visible` で表示。`translateY` を併用してフェードイン時に少し下から浮き上がる挙動。
+
+## 2026/05/25 (最新7)
+記事の言語区切り方式を `<section lang="x">` から `# <!--en-->` / `# <!--ja-->` に移行するよう求められた。Obsidianプレビューで Markdown がちゃんと整形されるようにするため。
+
+- `src/remark/lang-sections.mjs` 新規作成: H1 で唯一の子が `<!--en-->` または `<!--ja-->` というHTMLコメントのノードを検出し、次のマーカーまでのコンテンツを `<section lang="x">` で囲む remarkプラグイン。
+- `astro.config.mjs`: `markdown.remarkPlugins` に `remarkLangSections` を追加。
+- `src/utils/readingTime.ts`: 新形式（`# <!--en-->` マーカー）から英・日テキストを抽出するロジックに変更。旧形式（`<section lang="x">`）もフォールバックとしてサポート。
+- 全既存記事（11ファイル）を新形式に移行: `another-post.md`、`artemis-ii.md`、`dateTest.md`、`git-push-error.md`、`hashcat-password-cracking.md`、`long-title-test.md`、`making website.md`、`my-first-post.md`、`template test.md`、`URL test.md`、`self-hosting-fonts.md`（ユーザーが既に新形式で作成）
+- `templates/blog-post.md`: 新形式に更新。空の重複セクションも削除して2マーカー構成にスッキリ。
+- 重複した空セクションがあった `dateTest.md` と `URL test.md` も整理。
+
+ビルド検証: 全 29 ページが正常生成、各記事のHTMLに `<section lang="en">` と `<section lang="ja">` が正しく1個ずつ挿入されることを確認。読了時間も新形式から正しく計算される。
 
 ## 2026/05/25 (最新6)
 post-nav のサイズがまだ揃わない問題の再修正。

@@ -9,22 +9,10 @@ tags:
 url: url-test
 ---
 
-<section lang="en">
+# <!--en-->
+
 I hope it will be success.
 
-</section>
+# <!--ja-->
 
-<section lang="en">
-
-
-
-</section>
-<section lang="ja">
 うまくいくといいなー
-
-</section>
-<section lang="ja">
-
-
-
-</section>

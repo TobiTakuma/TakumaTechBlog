@@ -9,26 +9,14 @@ tags:
 url: datetest
 ---
 
-<section lang="en">
+# <!--en-->
+
 im testing date and time displayed correctry.
 
-</section>
+# <!--ja-->
 
-<section lang="en">
+日付と時間が反映されるかテストしています。
 
-
-
-</section>
-<section lang="ja">
-日付と時間が反映されるかテストしています。  
-
-<img src="/images/artemis-ii-launch-up-close.jpg" alt="Artemis II SLS rocket launch" style="max-width: 420px; width: 100%;" />. 
+<img src="/images/artemis-ii-launch-up-close.jpg" alt="Artemis II SLS rocket launch" style="max-width: 420px; width: 100%;" />
 
 うまくできているかな？
-</section>
-<section lang="ja">
-
-
-
-</section>
-

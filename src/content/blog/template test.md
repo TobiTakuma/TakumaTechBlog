@@ -7,14 +7,10 @@ tags: ["test"]
 url: template-test
 ---
 
-<section lang="en">
+# <!--en-->
 
 The weather is great today. Not going outside though.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 今日はすこぶるいい天気である。外には出ないけどね。
-
-</section>

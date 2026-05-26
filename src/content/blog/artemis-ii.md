@@ -9,7 +9,7 @@ url: artemis-ii
 
 <img src="/images/artemis-ii-launch-up-close.jpg" alt="Artemis II SLS rocket launch" style="max-width: 420px; width: 100%;" />
 
-<section lang="en">
+# <!--en-->
 
 ## Artemis II: A New Era of Human Spaceflight
 
@@ -27,9 +27,7 @@ The Artemis program is not simply a replay of Apollo. It aims to establish a sus
 
 Artemis II is the critical step that bridges robotic testing and full lunar landing.
 
-</section>
-
-<section lang="ja">
+# <!--ja-->
 
 ## アルテミスII：新たな有人宇宙飛行の幕開け
 
@@ -52,5 +50,3 @@ Artemis II is the critical step that bridges robotic testing and full lunar land
 ### SLSという巨人
 
 SLSのコアステージには4基のRS-25エンジンが搭載されており、これはスペースシャトルのメインエンジンと同型だ。そこに固体ロケットブースター2基が加わり、合計で約880万ニュートンという凄まじい推力を生み出す。人類が次の惑星を目指す旅は、この爆発的なエネルギーから始まっている。
-
-</section>
