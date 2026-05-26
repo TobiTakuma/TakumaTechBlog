@@ -5,6 +5,7 @@
 ```bash
 cd /Users/takumatoiyama/ComputerScience/my-astro-project/TakumaTechBlog
 npm run dev
+npm run dev -- --host
 ```
 
 ブラウザで `http://localhost:4321` を開く。
@@ -187,6 +188,13 @@ English summary goes here.
 ---
 
 # 変更ログ
+
+## 2026/05/25 (最新12)
+モバイルで making-website 記事を開くと画面全体が縮小される問題の修正を求められた。
+
+原因: 3列テーブルに "Cloudflare" (10文字) など長い単語があり、JetBrains Mono のモノスペース幅でセル内に収まらず、テーブルが iPhone 幅 375px を超えてしまう。iOS Safari は viewport を超える要素があると全体を縮小して画面に収める挙動のため、ページが小さく左上に寄って見える。
+
+- `src/styles/global.css`: テーブルにコードブロックと同じ横スクロール挙動を導入。`table` に `display: block`、`max-width: 100%`、`overflow-x: auto` を追加。セルには `white-space: nowrap` を追加してコードブロック同様に内容を1行で保持。画面幅を超える場合はテーブル単位で横スクロール。
 
 ## 2026/05/25 (最新11)
 案D は採用せず現状維持。フローティングボタン出現時のスライド距離だけ控えめに調整するよう求められた。
