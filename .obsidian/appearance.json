@@ -1,1 +1,6 @@
-{}
+{
+  "cssTheme": "GitHub Theme",
+  "interfaceFontFamily": "JetBrains Mono",
+  "textFontFamily": "JetBrains Mono",
+  "monospaceFontFamily": "JetBrains Mono"
+}

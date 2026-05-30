@@ -53,9 +53,26 @@ function getPostUrl(post: CollectionEntry<'blog'>) {
         </a>
       </li>
     ))}
+    {/* 不足分を透明な行で埋め、全ページのリスト高さを揃える（ページネーション位置を固定）。
+        実際の行と同じ post-title / post-meta 構造にして高さを一致させる */}
+    {Array.from({ length: page.size - page.data.length }).map(() => (
+      <li class="placeholder" aria-hidden="true">
+        <span class="post-link">
+          <div class="post-title">&nbsp;</div>
+          {/* 実記事はタグの pill（枠線+余白）で meta 行が少し高くなるので、
+              プレースホルダにも同じ pill を透明で入れて高さをぴったり合わせる */}
+          <div class="post-meta"><span class="tag">&nbsp;</span></div>
+        </span>
+      </li>
+    ))}
   </ul>
 
   <nav aria-label="Pagination" style="display: flex; align-items: center; gap: 1rem; margin-top: 2rem; font-family: var(--font-sans); font-size: 0.9rem;">
+    {page.url.first ? (
+      <a href={page.url.first}>« First</a>
+    ) : (
+      <span style="color: var(--color-text-muted);">« First</span>
+    )}
     {page.url.prev ? (
       <a href={page.url.prev}>← Prev</a>
     ) : (
@@ -68,6 +85,11 @@ function getPostUrl(post: CollectionEntry<'blog'>) {
       <a href={page.url.next}>Next →</a>
     ) : (
       <span style="color: var(--color-text-muted);">Next →</span>
+    )}
+    {page.url.last ? (
+      <a href={page.url.last}>Last »</a>
+    ) : (
+      <span style="color: var(--color-text-muted);">Last »</span>
     )}
   </nav>
 </BaseLayout>

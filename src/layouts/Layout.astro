@@ -114,8 +114,8 @@ const siteDescription = description ?? "Notes, discoveries, and writings by Taku
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
-      // コードブロックのコピーボタン（全 pre に自動付与）
-      document.querySelectorAll('article pre').forEach((pre) => {
+      // コードブロックのコピーボタン（mermaid 図の pre は除外）
+      document.querySelectorAll('article pre:not(.mermaid)').forEach((pre) => {
         if (pre.querySelector('.copy-btn')) return;
         const btn = document.createElement('button');
         btn.className = 'copy-btn';

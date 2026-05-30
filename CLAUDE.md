@@ -69,6 +69,31 @@ English summary goes here.
 - 英日共通の画像は `<section>` タグの**外**に置く
 - Obsidianの添付ファイル保存先を `public/images` に設定すると自動で正しい場所に保存される
 
+### 図の挿入（Mermaid）
+
+` ```mermaid ` のコードブロックを書くだけで図になる（`astro-mermaid` がブラウザ側で描画）。
+
+````markdown
+```mermaid
+flowchart LR
+    A["開始"] -->|ラベル| B["処理"]
+    B --> C["終了"]
+```
+````
+
+**ルール・注意点：**
+- **改行は `\n` でなく `<br/>` を使う**。`\n` は文字列のまま表示されることがある  
+  例）`A["1行目<br/>2行目"]`
+- ノードのテキストは `"..."` で囲む（記号 `&`・空白・日本語を含む場合は必須）
+- フローチャート以外も使える: `sequenceDiagram` / `classDiagram` / `gantt` / `pie` など（[公式](https://mermaid.js.org/)）
+- ローカル確認は `npm run dev`。古いJSがキャッシュされるので `Cmd + Shift + R` で強制リロード
+
+**仕組み・設定（変更不要、参考）：**
+- `astro.config.mjs` の `integrations` に `mermaid({ ... })` を登録
+- `mermaidConfig.fontFamily` をサイトと同じ `"JetBrains Mono"` に指定 → 文字幅の計測と描画が一致し、ラベルの箱が見切れない
+- `global.css` の `.mermaid` でリガチャ無効化（記号の変形防止）
+- コピーボタン（`Layout.astro`）は `article pre:not(.mermaid)` で図を除外（`Copy` 混入によるパースエラー防止）
+
 ---
 
 ## デザイン変更の方法
@@ -177,6 +202,10 @@ English summary goes here.
 質問：フォントの情報をフォルダの中に入れておいたら軽くなる？  
 回答：軽くなる。現在は Google Fonts から読み込んでいるため、外部サーバーへの DNS 解決と TLS 握手が 2 回発生する（fonts.googleapis.com と fonts.gstatic.com）。セルフホストすると Cloudflare Pages の CDN から同じ接続で配信できるので、初回訪問時に約 100-200ms 速くなる。プライバシー面でも Google にトラフィックが渡らない利点がある。ついでに使うウェイトの絞り込み・Latin サブセット化・`font-display: swap` を指定すると更に軽くなる。
 
+## 2026/05/25 - スマホで毎回デプロイせずに確認する方法
+質問：スマホ画面で確認したいが、毎回デプロイしてから確認するのは手間。  
+回答：`npm run dev -- --host` でローカルサーバーを LAN に公開。Astro が 3 つの URL を表示する。`localhost:4321` は Mac 内のみ、`192.168.x.x:4321` は同じ WiFi のデバイス、`100.x.x.x:4321` は Tailscale ネットワーク。Tailscale 経由なら別 WiFi や外出先からもアクセス可能。ブラウザの DevTools レスポンシブモード（Chrome は `Cmd+Option+M`）でも事前確認可能。実機での細かいデバッグは USB 接続 + Safari Web Inspector。
+
 ## 2026/05/25 - フッターの RSS と © 表記の意味
 質問：下にある RSS と © 2026 Takuma Toiyama って何？  
 回答：RSS は読者が「購読」できる仕組み。`/rss.xml` を RSS リーダーアプリ（Feedly等）に登録すると新着記事が通知される。© は著作権表示で「このサイトのコンテンツは私のもの」というサイン。書かなくても著作権は自動発生するので法的効力は実質ない。両方とも消しても問題なし。
@@ -189,99 +218,125 @@ English summary goes here.
 
 # 変更ログ
 
-## 2026/05/25 (最新12)
-モバイルで making-website 記事を開くと画面全体が縮小される問題の修正を求められた。
+## 2026/05/29 — ankitangoVar1 のタイポ修正
+- `## Teck Stach` → `## Tech Stack`（見出しのスペルミス）
+- `adds the generated cards to Anki and list Anki deck` → `... and lists Anki decks`（動詞の三単現・複数形）
 
-原因: 3列テーブルに "Cloudflare" (10文字) など長い単語があり、JetBrains Mono のモノスペース幅でセル内に収まらず、テーブルが iPhone 幅 375px を超えてしまう。iOS Safari は viewport を超える要素があると全体を縮小して画面に収める挙動のため、ページが小さく左上に寄って見える。
+## 2026/05/29 — ankitangoVar1 の日本語版を執筆
+- `src/content/blog/ankitangoVar1.md`: `# <!--ja-->` セクションを、現在の英語版と同じ構成の日本語本文に差し替え（概要 → デモ → アーキテクチャ図 → 技術スタック → 参考 → README誘導）。コードブロックはコマンドなのでそのまま、Mermaid 図は日本語ラベル版を使用。英語版が README 誘導型に作り直されていたため、それに合わせた
 
-- `src/styles/global.css`: テーブルにコードブロックと同じ横スクロール挙動を導入。`table` に `display: block`、`max-width: 100%`、`overflow-x: auto` を追加。セルには `white-space: nowrap` を追加してコードブロック同様に内容を1行で保持。画面幅を超える場合はテーブル単位で横スクロール。
+## 2026/05/29 — ページネーションに「最初/最後のページ」ボタン追加
+- `src/pages/blog/[...page].astro`: 左端に `« First`、右端に `Last »` を追加。`page.url.first` / `page.url.last`（該当ページにいる時は `undefined`）でリンク/無効スパンを出し分け。並びは `« First ← Prev N/M Next → Last »`
 
-## 2026/05/25 (最新11)
-案D は採用せず現状維持。フローティングボタン出現時のスライド距離だけ控えめに調整するよう求められた。
+## 2026/05/29 — ブログ一覧のページネーション位置を固定
+ページごとに「← Prev 1/3 Next →」の縦位置がズレる（記事件数の少ない最終ページで上にズレる）問題を修正。
 
-- `src/styles/global.css`: `.floating-btn` の `transform: translateY(8px)` を `translateY(5px)` に変更。出現時の上方向への動きが少しだけ抑えめになる。
+- `src/pages/blog/[...page].astro`: 記事が `page.size`（5件）に満たないページに、空のプレースホルダ `<li class="placeholder">` を不足分だけ追加。実際の行と同じ `.post-link > .post-title + .post-meta`（中身は `&nbsp;`）構造にして高さを一致させる。全ページが必ず5行になり高さが揃う
+- `src/styles/global.css`: `ul.post-list li.placeholder` を罫線なしに。同じクラス構造を再利用するのでデスクトップ/モバイル両対応
+- 確認: `/blog`=5件, `/blog/2`=5件, `/blog/3`=1件+プレースホルダ4 で計5行
+- 追加修正: ページ1の長いタイトルが2行に折り返して高さがズレていたため、`.post-title` に `white-space: nowrap; overflow: hidden; text-overflow: ellipsis;` を追加し全タイトルを1行＋… 省略に統一
+- さらに追加修正: 3ページ目が数px上にズレる残課題。原因はプレースホルダを `border-bottom: none` にしていたため、実記事の行が持つ罫線1px×4本分の高さが不足していた（実ページ4px / 空ページ1px）。`.placeholder` を `border-bottom-color: transparent`（1px幅は維持・透明）に変更し、罫線分の高さも含めて全ページきっかり一致させた
+- まだ微ズレ（2→3ページ）: 実記事の `.post-meta` にはタグの pill（枠線+余白）があり、プレーンな `&nbsp;` のプレースホルダより数px高かった。プレースホルダの meta にも `<span class="tag">&nbsp;</span>` を入れ、`ul.post-list li.placeholder .tag { border-color: transparent; color: transparent; }` で透明化。pill の box-model をそのまま再利用するので高さがピクセル一致（全記事に tags 有・空配列なしを確認済み）
 
-## 2026/05/25 (最新10)
-言語切替ボタンの UX について案D（ナビボタンが消えてフローティングに「移動」するクロスフェード）の検証モックアップ作成を求められた。
+## 2026/05/29 — Mermaid 図のサポート追加
+ankitangoVar1 記事に貼った Mermaid 図が描画されない（Astro がコードブロックのまま表示）との指摘を受けた。クライアントサイド描画方式で対応。
 
-- `mockups/option-d.html` 新規作成: スクロール 300px 超で `#lang-toggle-nav` に `.is-scrolled` を付けて非表示化、同時に `#lang-toggle-floating` に `.visible` を付けて出現させるクロスフェード挙動を実装。両方とも `transition: 220ms ease` で同期。本番には未適用、Obsidian/ブラウザで動作確認用。
+- `astro-mermaid` と `mermaid` を `npm install`
+- `astro.config.mjs`: `integrations: [mermaid({ theme: 'default', autoTheme: false })]` を追加（Shiki に mermaid コードブロックを無視させ、ブラウザ側で mermaid.js が SVG 描画する）。`autoTheme: false` はダークモード非対応のため固定テーマ
+- 記事内で ` ```mermaid ` コードブロックを書くだけで図になる。ビルド成功（29ページ）、生成HTMLで `<pre class="mermaid">` に生の graph 定義（`flowchart LR`）が保持されることを確認
+- 注意: ノードラベルの改行は `\n` でなく `<br/>` を使う（mermaid は `\n` を文字列として表示することがある）
+- 不具合修正: コピーボタン（`Layout.astro`）が全 `pre` に `Copy` を挿入し、mermaid の `<pre>` に混入して `"Anki"]Copy` でパースエラー → セレクタを `article pre:not(.mermaid)` にして mermaid 図を除外
+- 不具合修正: ラベルの箱が見切れる / `&` 周辺が崩れる → `mermaidConfig.fontFamily` 未指定で計測フォント（細い）と描画フォント（JetBrains Mono, 幅広）がズレていた。`astro.config.mjs` で `fontFamily: '"JetBrains Mono", "Noto Sans JP", monospace'` を指定。あわせて `global.css` の `.mermaid` にリガチャ無効化（`font-feature-settings: normal; font-variant-ligatures: none;`）を追加
+- `ankitangoVar1.md` のラベル内 `\n` を `<br/>` に置き換え（改行を確実にするため）
+- 「記事の書き方 → 図の挿入（Mermaid）」セクションを追加し、今後の使い方を明文化
 
-## 2026/05/25 (最新9)
-言語切替ボタンもスクロールに追従するよう求められた。
+## 2026/05/25 — 今日の作業まとめ
 
-- `src/layouts/Layout.astro`: `<button id="lang-toggle-floating" class="floating-btn">` をフローティングで追加（一番上に戻るボタンの上に縦積み）。ナビの `#lang-toggle` とラベル・状態を同期するよう JS をリファクタリング（`langButtons` 配列で両方扱う）。
-- `src/styles/global.css`: 個別の `#back-to-top` スタイルを `.floating-btn` 共通クラスに昇格。`#back-to-top` と `#lang-toggle-floating` は `bottom` の値だけ差別化。
-- スクロール 300px 超で `.visible` を一括付与し、両ボタンが同時に出現。
+今日は1日でかなり多くの変更を入れたので、テーマ別に整理。最終的な「サイトの状態」が見やすいよう機能ごとにまとめる。
 
-## 2026/05/25 (最新8)
-画面右下に「一番上に戻る」ボタンの追加を求められた。
+### 1. サイトのリッチ化（追加 → 取捨選択）
 
-- `src/layouts/Layout.astro`: `<button id="back-to-top">`（上矢印 SVG アイコン）をフッターの後に追加。スクロール量が 300px を超えたら `.visible` クラスを付与して表示、クリックで `window.scrollTo({ top: 0, behavior: 'smooth' })`。
-- `src/styles/global.css`: 右下固定の円形ボタン（40px、`--color-border` のボーダー）。デフォルト `opacity: 0` + `pointer-events: none` で完全非表示、`.visible` で表示。`translateY` を併用してフェードイン時に少し下から浮き上がる挙動。
+モックアップで確認した機能を一気に本番投入し、その後 UX に合わないものを削除。
 
-## 2026/05/25 (最新7)
-記事の言語区切り方式を `<section lang="x">` から `# <!--en-->` / `# <!--ja-->` に移行するよう求められた。Obsidianプレビューで Markdown がちゃんと整形されるようにするため。
+**追加した機能（最終状態で残っているもの）**:
+- 読書進捗バー（ページ上部 2px のアクセントカラー）
+- 記事に読了時間表示（日英で別計算: 英語 200wpm、日本語 500cpm）
+- タグを枠線 pill 型のバッジに
+- コードブロックのコピーボタン（ホバーで出現）
+- 前/次の記事リンク（カード型 2 カラム、モバイルで 1 カラム）
+- フッター（GitHub `https://github.com/TobiTakuma` / RSS / コピーライト）
+- OGP / Twitter Card メタタグ
+- About ページ（`/about`、日英）
+- RSS フィード（`/rss.xml`、`@astrojs/rss` 使用）
 
-- `src/remark/lang-sections.mjs` 新規作成: H1 で唯一の子が `<!--en-->` または `<!--ja-->` というHTMLコメントのノードを検出し、次のマーカーまでのコンテンツを `<section lang="x">` で囲む remarkプラグイン。
-- `astro.config.mjs`: `markdown.remarkPlugins` に `remarkLangSections` を追加。
-- `src/utils/readingTime.ts`: 新形式（`# <!--en-->` マーカー）から英・日テキストを抽出するロジックに変更。旧形式（`<section lang="x">`）もフォールバックとしてサポート。
-- 全既存記事（11ファイル）を新形式に移行: `another-post.md`、`artemis-ii.md`、`dateTest.md`、`git-push-error.md`、`hashcat-password-cracking.md`、`long-title-test.md`、`making website.md`、`my-first-post.md`、`template test.md`、`URL test.md`、`self-hosting-fonts.md`（ユーザーが既に新形式で作成）
-- `templates/blog-post.md`: 新形式に更新。空の重複セクションも削除して2マーカー構成にスッキリ。
-- 重複した空セクションがあった `dateTest.md` と `URL test.md` も整理。
+**追加後に削除したもの**:
+- ダークモードトグル（不要との判断）
+- トップページのヒーロー / About 抜粋（同上）
+- 記事一覧の description プレビュー（同上）
 
-ビルド検証: 全 29 ページが正常生成、各記事のHTMLに `<section lang="en">` と `<section lang="ja">` が正しく1個ずつ挿入されることを確認。読了時間も新形式から正しく計算される。
+**新規ファイル**:
+- `src/utils/readingTime.ts` — 読了時間計算ユーティリティ
+- `src/pages/about.astro`
+- `src/pages/rss.xml.ts`
+- `astro.config.mjs` に `site: 'https://takumatechblog.pages.dev'` を設定
+- `package.json` に `@astrojs/rss` 追加
 
-## 2026/05/25 (最新6)
-post-nav のサイズがまだ揃わない問題の再修正。
+### 2. フォント周り
 
-- `src/styles/global.css`: `.post-nav .title` に `line-height: 1.4` を明示（body の 1.8 継承を打ち切る）。`min-height` を `height: calc(0.95rem * 1.4 * 2)` に変更し、タイトルが 1 行でも 2 行でも常に 2 行分の固定高さに。これでどのページでも両カードのサイズが完全に揃う。
+**JetBrains Mono のセルフホスト化**:
+- `public/fonts/JetBrainsMono-latin.woff2` (31KB、可変フォント、normal 全ウェイト)
+- `public/fonts/JetBrainsMono-italic-latin.woff2` (22KB、italic)
+- `global.css` の `@import url('https://fonts.googleapis.com/...')` を削除、`@font-face` 宣言 2 つに置換
+- `font-weight: 100 800` で可変フォントの全範囲、`font-display: swap` でフォールバック表示
+- 効果: 外部リクエスト 0 件（旧: googleapis + gstatic の 2 ドメイン）、初回ロード約 100-200ms 短縮
 
-## 2026/05/25 (最新5)
-記事日付・読了時間・タグなど UI のフォントが本文と違うのを統一するよう求められた。
+**UI フォントの統一**:
+- `--font-sans` を `system-ui, ...` から `"JetBrains Mono", sans-serif` に変更
+- ナビ・メタ情報・タグ・フッター・テーブル・post-nav ラベル等もすべて JetBrains Mono に
+- 日本語文字は sans-serif フォールバック（既存挙動）
 
-- `src/styles/global.css`: `--font-sans` を `system-ui, -apple-system, sans-serif` から `"JetBrains Mono", sans-serif` に変更。これによりナビ・メタ情報・タグ・フッター・テーブル・post-nav ラベル等もすべて JetBrains Mono になる。日本語文字は sans-serif フォールバックで表示（既存挙動と同じ）。
+### 3. 記事フォーマットの移行: `<section>` → `# <!--en-->` / `# <!--ja-->`
 
-## 2026/05/25 (最新4)
-記事ページ末尾の Older/Newer カードがタイトルの長さで高さがバラつく問題の修正を求められた。
+Obsidian プレビューで Markdown が整形されるよう、言語区切りを HTML タグから「H1 + HTML コメント」マーカー方式に変更。
 
-- `src/styles/global.css`: `.post-nav .title` に `-webkit-line-clamp: 2`（2 行で省略）、`min-height`（短いタイトルでも 2 行分の高さを確保）、`overflow-wrap: break-word` を追加。両カードのサイズが常に揃う。
+- 新規: `src/remark/lang-sections.mjs` — H1 で唯一の子が `<!--en-->` または `<!--ja-->` の HTML コメントなノードを検出し、次のマーカーまでを `<section lang="x">` で囲む remark プラグイン
+- `astro.config.mjs` の `markdown.remarkPlugins` に登録
+- `src/utils/readingTime.ts` を新形式対応に更新（旧形式もフォールバックでサポート）
+- 全 11 記事と `templates/blog-post.md` を新形式に移行
+- `dateTest.md` / `URL test.md` の重複した空セクションも整理
 
-## 2026/05/25 (最新3)
-JetBrains Mono をセルフホスト化するよう求められた。Google Fonts への外部リクエストを排除して初回ロードを高速化。
+### 4. UI 細部の改善
 
-- `public/fonts/JetBrainsMono-latin.woff2` (31KB): 可変フォント。normal の 400/500/700 を 1 ファイルでカバー（Google Fonts API が返す Latin サブセット済み woff2 をダウンロード）
-- `public/fonts/JetBrainsMono-italic-latin.woff2` (22KB): italic 専用
-- `src/styles/global.css`: 冒頭の `@import url('https://fonts.googleapis.com/...')` を削除し、`@font-face` 宣言 2 つ（normal / italic）に置き換え。`font-weight: 100 800` で可変フォントの全範囲をカバー、`font-display: swap` でフォント読み込み中もフォールバック表示。
+**post-nav（Older/Newer）のサイズ揃え** — 2回試行して最終形に到達:
+- `.post-nav .title` に `line-height: 1.4` を明示（body の 1.8 継承を切る）
+- `height: calc(0.95rem * 1.4 * 2)` で 2 行分の固定高さに
+- `-webkit-line-clamp: 2` で長いタイトルは省略表示
+- `overflow-wrap: break-word` で長い英単語にも対応
 
-合計フォントサイズ ~53KB、外部リクエスト 0 件（旧: fonts.googleapis.com + fonts.gstatic.com の 2 ドメイン）。初回訪問で約 100-200ms の短縮が見込める。
+**画面右下のフローティングボタン**:
+- `#back-to-top`（上矢印アイコン、クリックで `scrollTo({ behavior: 'smooth' })`)
+- `#lang-toggle-floating`（ナビの言語ボタンと同期。クリックで言語切替）
+- 共通スタイル `.floating-btn` クラスに統合、`bottom` の値だけ差別化
+- 両ボタンともスクロール 300px 超で `.visible` を付与して同時に出現
+- 出現時の `translateY` を 8px → 5px に微調整して控えめに
 
-矢印（→ ←）など Latin サブセットに含まれない文字は font stack の `sans-serif` にフォールバックする（既存の挙動と同じ）。
+**案D（言語切替のクロスフェード移動）** は検討したが採用せず:
+- `mockups/option-d.html` に検証用モックアップだけ作成して本番には未適用
 
-## 2026/05/25 (最新2)
-ダークモード・トップページのAbout抜粋・description プレビューの削除を求められた。
+**モバイルでのテーブル横スクロール**:
+- 原因: 3列テーブルの "Cloudflare" など長い単語が JetBrains Mono のモノスペース幅でセル内に収まらず、テーブルが iPhone 幅を超え、iOS Safari が全体を縮小して画面に収める挙動を引き起こしていた
+- `table` に `display: block` / `max-width: 100%` / `overflow-x: auto` を追加、セルには `white-space: nowrap`
+- コードブロックと同じ UX に統一
 
-- `src/layouts/Layout.astro`: テーマ判定スクリプト、`#theme-toggle` ボタン、トグル用 JS を削除。
-- `src/styles/global.css`: `html.dark` ブロック、`--color-hero-bg` 変数、`.hero` 関連スタイル、`.post-desc` スタイルを削除。
-- `src/pages/index.astro`: ヒーロー section を削除し、元の `<h1>Welcome to ...` 形式に戻した。description プレビュー行を削除。
-- `src/pages/blog/[...page].astro`: description プレビュー行を削除。
+### 5. 開発ワークフローの追加
 
-About ページ自体（/about）とナビの About リンクは残置。
+- `npm run dev -- --host` で LAN / Tailscale 経由で実機（iPhone）からアクセス可能に
+- Tailscale の `100.x.x.x` IP 経由なら別 WiFi / 外出先からも確認可能
+- ブラウザの DevTools レスポンシブモードでも事前確認可能
 
-## 2026/05/25
-サイトのリッチ化を求められた（軽量さは維持）。モックアップで確認した機能を本番に全部入れた。
+### 検証
 
-- `src/styles/global.css`: ダークモード用CSS変数（`html.dark`）、進捗バー、アイコンボタン、ヒーロー、section-title、post-list（description + meta + tag）、article-meta、コピーボタン、post-nav（前/次）、footer のスタイルを追加。
-- `src/layouts/Layout.astro`: 進捗バー要素、ダークモードトグル＋言語トグル（アイコンボタン化）、About リンク追加、OGP/Twitter meta、RSS link、フッター（GitHub `https://github.com/TobiTakuma` / RSS）、コードコピーボタンを全 `<article> pre` に自動付与する JS、FOUC 防止スクリプトにテーマ判定を追加。
-- `src/utils/readingTime.ts` 新規作成: 記事本文から英語の単語数と日本語の文字数を別々にカウントし、英語=200wpm・日本語=500cpmで読了時間を算出。
-- `src/pages/index.astro`: ヒーローセクション（日英）、`post-list` クラスで description + 読了時間 + タグバッジ表示。`<>` は Astro パーサで弾かれたので `<Fragment>` を使用。
-- `src/pages/blog/[...page].astro`: 同様に `post-list` 形式に変更。
-- `src/pages/[...slug].astro`: 記事メタを `article-meta` で統一（日付・読了時間・タグバッジ）、前/次の記事リンク（`post-nav`）を末尾に追加。`getStaticPaths` で sorted 配列から newer/older を渡す。
-- `src/pages/about.astro` 新規作成: 日英の自己紹介ページ。
-- `src/pages/rss.xml.ts` 新規作成: `@astrojs/rss` で RSS フィード生成。
-- `astro.config.mjs`: `site: 'https://takumatechblog.pages.dev'` を設定（RSS の絶対 URL 用、カスタムドメインに変更したら要更新）。
-- `package.json`: `@astrojs/rss` を依存に追加。
-
-ビルド確認: `npm run build` で全 26 ページ + `/rss.xml` が正常生成。
+すべての変更後にビルド成功。最終的に 26 ページ + `/rss.xml` が正常生成。
 
 ## 2026/05/24
 making-website記事のレビュー・修正・日英分割を求められた。

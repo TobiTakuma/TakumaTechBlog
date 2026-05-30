@@ -189,6 +189,12 @@ ul.post-list li {
 }
 ul.post-list li:last-child { border-bottom: none; }
 
+/* ページネーション位置を固定するための空行。
+   罫線は「透明 + 1px」にして、実記事の行と高さ（罫線1px分含む）をきっかり一致させる */
+ul.post-list li.placeholder { border-bottom-color: transparent; }
+/* 中の pill も枠線・文字を透明にして高さだけ実記事と揃える */
+ul.post-list li.placeholder .tag { border-color: transparent; color: transparent; }
+
 ul.post-list a.post-link {
   display: block;
   color: var(--color-text);
@@ -203,6 +209,10 @@ ul.post-list a.post-link:hover .post-title { color: var(--color-accent); }
   font-weight: 500;
   margin-bottom: 4px;
   transition: color var(--transition);
+  /* 長いタイトルも必ず1行で表示し、はみ出しは … で省略（行高をページ間で揃える） */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .post-meta {
@@ -483,3 +493,14 @@ footer .icon { width: 14px; height: 14px; }
 
 html.ja .lang-en, html.ja section[lang="en"] { display: none; }
 html.ja .lang-ja, html.ja section[lang="ja"] { display: revert; }
+
+/* ============================================================
+   Mermaid 図
+   ============================================================ */
+/* body のリガチャ設定（liga/calt）が SVG に継承されると記号が変形するため無効化 */
+.mermaid,
+.mermaid svg,
+.mermaid foreignObject * {
+  font-feature-settings: normal;
+  font-variant-ligatures: none;
+}
