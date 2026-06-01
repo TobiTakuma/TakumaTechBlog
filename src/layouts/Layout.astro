@@ -115,8 +115,16 @@ const siteDescription = description ?? "Notes, discoveries, and writings by Taku
       });
 
       // コードブロックのコピーボタン（mermaid 図の pre は除外）
+      // pre は overflow-x:auto で横スクロールするため、ボタンを pre の子にすると
+      // 中身と一緒にスクロールしてしまう。スクロールしないラッパー(.codeblock)で
+      // pre を包み、ボタンはラッパー側に置いて位置を固定する。
       document.querySelectorAll('article pre:not(.mermaid)').forEach((pre) => {
-        if (pre.querySelector('.copy-btn')) return;
+        if (pre.parentElement?.classList.contains('codeblock')) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'codeblock';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
         const btn = document.createElement('button');
         btn.className = 'copy-btn';
         btn.textContent = 'Copy';
@@ -129,7 +137,7 @@ const siteDescription = description ?? "Notes, discoveries, and writings by Taku
             setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
           } catch (e) { /* noop */ }
         });
-        pre.appendChild(btn);
+        wrapper.appendChild(btn);
       });
     </script>
   </body>

@@ -23,5 +23,13 @@ export default defineConfig({
   markdown: {
     // # <!--en--> / # <!--ja--> マーカーを <section lang="x"> に変換
     remarkPlugins: [remarkLangSections],
+    // コードブロックのシンタックスハイライト（Astro 標準の Shiki）。
+    // - theme: 白基調のサイトに合わせてライトテーマ
+    // - langAlias: Obsidian で書く大文字 ```Go を Shiki の小文字 'go' に対応付け
+    //   （これがないと未知の言語＝plaintext 扱いで色分けされない）
+    shikiConfig: {
+      theme: 'github-light',
+      langAlias: { Go: 'go', Golang: 'go' },
+    },
   },
 });

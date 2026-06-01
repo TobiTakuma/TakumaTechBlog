@@ -4,7 +4,7 @@ await tp.file.rename(title);
 -%>
 ---
 title: 
-title_en: <% title %>
+title_en:
 pubDate: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
 description:
 tags: []

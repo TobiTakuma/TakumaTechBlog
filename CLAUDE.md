@@ -214,9 +214,37 @@ flowchart LR
 質問：JetBrains Monoに日本語グリフはないと言っていたが、実際には表示されている  
 回答：実際に表示できていたため、フォントをJetBrains Monoに一本化。`--font-en`/`--font-ja` の区別をなくし `--font-body: "JetBrains Mono", sans-serif` に統一した。
 
+## 2026/05/29 - Git の CRLF/LF 改行コード警告の意味
+質問：`warning: in the working copy of '.obsidian/themes/Minimal/...', CRLF will be replaced by LF` ってどういう意味？  
+回答：改行コードの違いの警告で実害なし。CRLF=Windows形式（`\r\n`）、LF=Mac/Linux形式（`\n`）。Minimalテーマのファイルが CRLF を使っているため Git が次回 LF に変換すると知らせている。放置でOK。気になるならテーマは自分で編集しないので `.gitignore` に `.obsidian/themes/` を追加して管理外にするのが一番すっきりする。
+
 ---
 
 # 変更ログ
+
+## 2026/06/01 — Go_CSV_Read_Error 英語版の校正（日本語と意味を一致）
+スペルミス・ニュアンス差のチェックを依頼。文法のみのミス（意味は通じる）は指示によりそのまま。
+- 英語の解説2か所を修正。問題セクション: "more or fewer rows/lines" → 「各行のセル数(cells)の違い」基準に（実際のエラー原因はフィールド数の不一致で、日本語版「セル数」が正しく英語だけ rows にズレていた）。解決法セクション: "number of rows varies" → "each row has a different number of cells" に統一、バッククォート前後のスペース欠けも補完
+- スペル `FildPerRecord`→`FieldsPerRecord`、語の誤り `formula`→`file` はユーザーが先に修正済み
+- 日本語・コード・文法のみのミスは未変更
+
+## 2026/06/01 11:08 — コピーボタンが横スクロールで一緒に動く問題を修正
+コードブロックが横に長く狭い画面でスクロールすると、右上の Copy ボタンも中身と一緒に動いてしまう不具合。原因はボタンが `overflow-x:auto` でスクロールする `pre` の子要素だったため。
+- `src/layouts/Layout.astro`: コピーボタン生成時、`pre` をスクロールしないラッパー `<div class="codeblock">` で包み、ボタンを `pre` の子ではなく**ラッパー側**に `appendChild`。位置基準がスクロールしない要素になりボタンが右上固定に（`.codeblock` クラスは CSS 側に元々あったが JS が使っていなかった）
+- `src/styles/global.css`: `.codeblock` を位置基準(`position:relative`)＋余白担当に整理。`article pre` から `position:relative` を外し `overflow-x:auto` でスクロール担当。`.codeblock > pre { margin:0 }` で余白の二重がけを防止。ラッパー無しの mermaid 図用に `article pre` の `margin-bottom` は維持
+- ビルド成功（29ページ）。実スクロール挙動は要ブラウザ確認（狭い画面＋長い行）
+
+## 2026/06/01 11:00 — 設計見直し：古いページ削除
+設計の問題点レビューを依頼され、検出した中から「古いページの本番公開」を修正。
+- `src/pages/blog/index-old.astro`（12/15 の遺物）を削除。`/blog/index-old` として本番公開されていた重複一覧ページで、`<Layout>` を必須の `title` 無しで呼んでおり `<title>` が空だった。ビルドは 30→29 ページに減り、当該 URL が消えたことを確認
+- 未対応の指摘（任意）: ②`<html lang="en">` が日本語表示時も固定（a11y/SEO）③記事の `og:type=website`・canonical/og:image 無し ④`[...slug].astro` の `getElementById(...)!` 非null断言。日英両本文を1HTMLに入れCSSで隠す方式は gzip後4〜6KB と軽く、追加リクエスト0で速度方針に合致するため現状維持
+
+## 2026/06/01 10:12 — コードブロックの色分け＋行番号対応（Obsidian風に）
+Go_CSV_Read_Error 記事のコードブロックが、Obsidian では色分け・行番号付きなのにブログでは無装飾、との指摘。原因は2つ：① ` ```Go `（大文字）が Shiki に認識されず `plaintext` 扱いで色分けなし、② テーマが `github-dark`（暗背景用の明色）なのに CSS で背景を薄グレーに上書きし溶けて見えた。配色はライト（github-light）を希望（`mockups/codeblock-theme.html` で A/B 比較し A を選択）。
+
+- `astro.config.mjs`: `markdown.shikiConfig` を追加。`theme: 'github-light'`、`langAlias: { Go: 'go', Golang: 'go' }`（Obsidian の大文字表記を Shiki の小文字言語名に対応付け、記事側は無修正で OK）
+- `src/styles/global.css`: ① `article pre.astro-code { background: var(--color-code-bg) !important }` で Shiki のインライン背景色を上書き ② Shiki が各行に付ける `<span class="line">` に CSS カウンター（`.line::before` の `counter(line)`）で行番号を採番。`user-select: none` で番号は選択・コピー対象外、`::before` なので textContent にも含まれずコピーに混ざらない ③ 横余白を `pre` から `.line` 側へ移動（番号と本文の左余白を揃える）
+- 検証: ビルド成功（30ページ）。`data-language="Go"` が `github-light` で色分け（キーワード赤 #D73A49・関数 紫 #6F42C1・型 青 #005CC5・文字列 濃紺 #032F62）、`.line` 65 行（空行も含むので採番連番）
 
 ## 2026/05/29 — ankitangoVar1 のタイポ修正
 - `## Teck Stach` → `## Tech Stack`（見出しのスペルミス）

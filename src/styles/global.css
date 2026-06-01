@@ -315,18 +315,46 @@ code {
   border-radius: 3px;
 }
 
-.codeblock,
-article pre {
+/* .codeblock はスクロールしない位置基準。コピーボタンはこちらの子に置くので
+   pre が横スクロールしてもボタンは右上に固定される */
+.codeblock {
   position: relative;
   margin-bottom: var(--space-md);
 }
 article pre {
   background:    var(--color-code-bg);
-  padding:       var(--space-md);
+  padding:       var(--space-md) 0;   /* 横余白は行側(.line)で取る */
   border-radius: 6px;
-  overflow-x:    auto;
+  overflow-x:    auto;                /* 横スクロールは pre が担当 */
+  margin-bottom: var(--space-md);     /* mermaid 等ラッパー無しの pre 用 */
 }
+/* ラッパーで包まれた pre は余白を .codeblock 側が持つので二重にしない */
+.codeblock > pre { margin: 0; }
 article pre code { background: none; padding: 0; }
+
+/* Shiki がテーマ背景色をインラインで付けるので、サイトの色に統一して上書き */
+article pre.astro-code { background: var(--color-code-bg) !important; }
+
+/* 行番号: Shiki が各行を <span class="line"> で包むので CSS カウンターで採番。
+   ::before の番号は textContent に含まれず、コピー時に混ざらない */
+article pre.astro-code code {
+  display:       grid;
+  counter-reset: line;
+}
+article pre.astro-code .line {
+  padding: 0 var(--space-md);
+}
+article pre.astro-code .line::before {
+  counter-increment:  line;
+  content:            counter(line);
+  display:            inline-block;
+  width:              1.4rem;
+  margin-right:       1.1rem;
+  text-align:         right;
+  color:              #b0b6be;
+  user-select:        none;
+  -webkit-user-select: none;
+}
 
 .copy-btn {
   position: absolute;

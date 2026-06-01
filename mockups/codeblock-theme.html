@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コードブロック配色サンプル</title>
+<style>
+  /* サイト本番に近いフォント。なければ等幅にフォールバック */
+  body {
+    font-family: "JetBrains Mono", "Noto Sans JP", monospace;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    color: #1f2937;
+    background: #ffffff;
+    line-height: 1.7;
+  }
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.1rem; margin-top: 2.5rem; }
+  .note { color: #6b7280; font-size: 0.85rem; }
+
+  /* ===== 共通: コードブロック ===== */
+  pre {
+    font-family: "JetBrains Mono", "Noto Sans JP", monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    border-radius: 6px;
+    padding: 0.9rem 0;            /* 左右は code 側で取る */
+    overflow-x: auto;
+    margin: 0.8rem 0 2rem;
+  }
+  pre code {
+    display: grid;               /* 各行を独立した行に */
+    counter-reset: line;
+    background: none;
+    padding: 0;
+  }
+  pre code .line {
+    padding: 0 1.1rem;
+  }
+  /* 行番号: CSS カウンターで左端に付与（コピー時には含まれない） */
+  pre code .line::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 1.4rem;
+    margin-right: 1.1rem;
+    text-align: right;
+    user-select: none;           /* 番号は選択・コピー対象外 */
+  }
+
+  /* ===== ライト (github-light) ===== */
+  pre.light {
+    background: #f3f4f6;          /* サイトの --color-code-bg と同じ薄グレー */
+    color: #24292e;
+  }
+  pre.light .line::before { color: #b0b6be; }       /* 番号 */
+  pre.light .kw  { color: #d73a49; }                /* キーワード */
+  pre.light .fn  { color: #6f42c1; }                /* 関数名 */
+  pre.light .str { color: #032f62; }                /* 文字列 */
+  pre.light .typ { color: #005cc5; }                /* 型・組込 */
+  pre.light .com { color: #6a737d; }                /* コメント */
+
+  /* ===== ダーク (github-dark) ===== */
+  pre.dark {
+    background: #24292e;
+    color: #e1e4e8;
+  }
+  pre.dark .line::before { color: #57606a; }
+  pre.dark .kw  { color: #f97583; }
+  pre.dark .fn  { color: #b392f0; }
+  pre.dark .str { color: #9ecbff; }
+  pre.dark .typ { color: #79b8ff; }
+  pre.dark .com { color: #6a737d; }
+</style>
+</head>
+<body>
+
+<h1>コードブロック配色サンプル</h1>
+<p class="note">同じ Go コードを「ライト」と「ダーク」の2案で表示しています。<br>
+どちらも <strong>シンタックスハイライト（色分け）</strong> ＋ <strong>左端の行番号</strong> 付き。本番もこの見た目になります。</p>
+
+<!-- ===================== 案A: ライト ===================== -->
+<h2>案A: ライト（github-light）</h2>
+<p class="note">背景が明るく、文字が濃い。白基調のサイトに馴染む。</p>
+<pre class="light"><code><span class="line"><span class="kw">package</span> main</span>
+<span class="line"></span>
+<span class="line"><span class="kw">import</span> <span class="str">"encoding/csv"</span></span>
+<span class="line"></span>
+<span class="line"><span class="kw">func</span> <span class="fn">readWord</span>(path <span class="typ">string</span>) {</span>
+<span class="line">	file, err := os.<span class="fn">Open</span>(path)</span>
+<span class="line">	<span class="kw">if</span> err != <span class="typ">nil</span> {</span>
+<span class="line">		fmt.<span class="fn">Println</span>(<span class="str">"Error: could not open file: "</span>, path)</span>
+<span class="line">		<span class="kw">return</span> []<span class="typ">string</span>{}</span>
+<span class="line">	}</span>
+<span class="line">	<span class="kw">defer</span> file.<span class="fn">Close</span>()</span>
+<span class="line"></span>
+<span class="line">	reader := csv.<span class="fn">NewReader</span>(file)</span>
+<span class="line">	records, err := reader.<span class="fn">ReadAll</span>()</span>
+<span class="line">	<span class="kw">return</span> words</span>
+<span class="line">}</span></code></pre>
+
+<!-- ===================== 案B: ダーク ===================== -->
+<h2>案B: ダーク（github-dark）</h2>
+<p class="note">コード部分だけ黒背景。エディタ風で色が鮮やか。サイト本体は白のまま。</p>
+<pre class="dark"><code><span class="line"><span class="kw">package</span> main</span>
+<span class="line"></span>
+<span class="line"><span class="kw">import</span> <span class="str">"encoding/csv"</span></span>
+<span class="line"></span>
+<span class="line"><span class="kw">func</span> <span class="fn">readWord</span>(path <span class="typ">string</span>) {</span>
+<span class="line">	file, err := os.<span class="fn">Open</span>(path)</span>
+<span class="line">	<span class="kw">if</span> err != <span class="typ">nil</span> {</span>
+<span class="line">		fmt.<span class="fn">Println</span>(<span class="str">"Error: could not open file: "</span>, path)</span>
+<span class="line">		<span class="kw">return</span> []<span class="typ">string</span>{}</span>
+<span class="line">	}</span>
+<span class="line">	<span class="kw">defer</span> file.<span class="fn">Close</span>()</span>
+<span class="line"></span>
+<span class="line">	reader := csv.<span class="fn">NewReader</span>(file)</span>
+<span class="line">	records, err := reader.<span class="fn">ReadAll</span>()</span>
+<span class="line">	<span class="kw">return</span> words</span>
+<span class="line">}</span></code></pre>
+
+<p class="note">※ これは見た目確認用のモックアップです。実際の色分けは Shiki が自動で行うため、ここより正確になります。</p>
+
+</body>
+</html>
