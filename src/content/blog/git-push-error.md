@@ -5,6 +5,7 @@ pubDate: 2026-04-30T10:00
 description: "Git Push Error: failed to push some refs"
 tags:
   - Git
+  - DevLog
 url: git-push-error
 ---
 

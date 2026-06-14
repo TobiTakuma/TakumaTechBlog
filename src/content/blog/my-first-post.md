@@ -1,9 +1,12 @@
 ---
-title: "私の最初の投稿 (Content Collections版)"
-title_en: "My First Post (Content Collections)"
+title: 私の最初の投稿 (Content Collections版)
+title_en: My First Post (Content Collections)
 pubDate: 2025-04-14
-description: "Content Collections を使って記事を追加しました。"
-tags: ["Astro", "Blog"]
+description: Content Collections を使って記事を追加しました。
+tags:
+  - Astro
+  - Blog
+  - test
 url: my-first-post
 ---
 

@@ -4,7 +4,7 @@ title_en: This is a Test Article to Check How an Extremely Long Title Is Display
 pubDate: 2026-05-23T10:00
 description: タイトルの省略表示テスト用記事
 tags:
-  - DevLog
+  - test
 url: long-title-test
 ---
 

@@ -1,9 +1,13 @@
 ---
-title: "アルテミスII — 人類が再び月へ向かう日"
-title_en: "Artemis II — The Day Humanity Returns to the Moon"
+title: アルテミスII — 人類が再び月へ向かう日
+title_en: Artemis II — The Day Humanity Returns to the Moon
 pubDate: 2026-05-22
-description: "NASAのアルテミス計画第2弾、アルテミスIIについて。有人月周回飛行の意義と、その先にある火星への道筋を考える。"
-tags: ["Space", "NASA", "Artemis"]
+description: NASAのアルテミス計画第2弾、アルテミスIIについて。有人月周回飛行の意義と、その先にある火星への道筋を考える。
+tags:
+  - Space
+  - NASA
+  - Artemis
+  - test
 url: artemis-ii
 ---
 

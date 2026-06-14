@@ -5,6 +5,7 @@ pubDate: 2026-05-29T17:07
 description: I created a CLI tool to make Anki more convenient
 tags:
   - DevLog
+  - ankitango
 url: ankitangoV1
 ---
 

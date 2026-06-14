@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/blog/go imports.md",
+                "file": "src/content/blog/URL test.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "go imports"
+              "title": "URL test"
             }
           }
         ]
@@ -186,21 +186,23 @@
   },
   "active": "542f182a93ecb4b0",
   "lastOpenFiles": [
-    "src/content/blog/go imports.md",
-    "src/content/blog/ankitangoV1.md",
+    "src/content/blog/template test.md",
+    "src/content/blog/my-first-post.md",
     "src/content/blog/making website.md",
     "src/content/blog/long-title-test.md",
     "src/content/blog/hashcat-password-cracking.md",
     "src/content/blog/Go_CSV_Read_Error.md",
+    "src/content/blog/go imports.md",
     "src/content/blog/git-push-error.md",
+    "src/content/blog/dateTest.md",
     "src/content/blog/artemis-ii.md",
     "src/content/blog/another-post.md",
     "src/content/blog/ankitangoV2.md",
-    "README.md",
+    "src/content/blog/ankitangoV1.md",
     "src/content/blog/URL test.md",
+    "README.md",
     "src/content/blog/takumatoiyama.com.md",
     "CLAUDE.md",
-    "src/content/blog/my-first-post.md",
     "dist/another-post/index.html",
     "dist/another-post",
     "dist/my-first-post/index.html",
@@ -222,8 +224,6 @@
     "node_modules/dayjs/README.md",
     "node_modules/dayjs/CHANGELOG.md",
     "node_modules/es-toolkit/README.md",
-    "node_modules/es-toolkit/CHANGELOG.md",
-    "node_modules/dagre-d3-es/README.md",
     "node_modules/layout-base/layout-schema.png",
     "node_modules/cytoscape-fcose/node_modules/layout-base/layout-schema.png",
     "node_modules/cytoscape-fcose/demo/incrementalConstraints.gif",

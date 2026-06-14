@@ -6,6 +6,7 @@ description: this is second posts
 tags:
   - Astro
   - Blog
+  - test
 url: another-post
 ---
 
