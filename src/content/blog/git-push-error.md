@@ -2,7 +2,7 @@
 title: "push時エラー「error: failed to push some refs」の原因と解決法"
 title_en: "Git Push Error: failed to push some refs"
 pubDate: 2026-04-30T10:00
-description: ローカルとリモートが分岐した際に発生するpushエラーの解決法
+description: "Git Push Error: failed to push some refs"
 tags:
   - Git
 url: git-push-error

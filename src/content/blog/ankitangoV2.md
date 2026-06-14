@@ -2,7 +2,7 @@
 title: ankitangov2(txt、csvファイルに対応、geminiが利用可能)
 title_en: ankitangov2(use .txt and .csv, generate with gemini)
 pubDate: 2026-06-05T18:08
-description: anktangoがアップデートされた
+description: ankitango update news
 tags:
   - DevLog
 url: ankitangov2

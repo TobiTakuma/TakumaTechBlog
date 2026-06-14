@@ -1,9 +1,11 @@
 ---
-title: "2つ目の投稿"
-title_en: "Another Post"
+title: 2つ目の投稿
+title_en: Another Post
 pubDate: 2024-01-15
-description: "これは2つ目の投稿です。"
-tags: ["Astro", "Blog"]
+description: this is second posts
+tags:
+  - Astro
+  - Blog
 url: another-post
 ---
 
